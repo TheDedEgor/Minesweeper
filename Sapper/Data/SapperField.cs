@@ -6,17 +6,17 @@ using System.Threading.Tasks;
 
 namespace Sapper
 {
-    internal enum Difficulty : byte
+    public enum Difficulty : byte
     {
         Beginner = 10,
         Amateur = 40,
         Professional = 99
     }
-    internal class SapperField
+    public class SapperField
     {
-        internal sbyte[,] Field { get; }
+        public sbyte[,] Field { get; }
         private Random r = new Random();
-        internal SapperField(Difficulty difficulty)
+        public SapperField(Difficulty difficulty)
         {
             if (difficulty == Difficulty.Beginner)
                 Field = new sbyte[9, 9];

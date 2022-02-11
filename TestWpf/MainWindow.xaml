@@ -6,7 +6,12 @@
         xmlns:local="clr-namespace:TestWpf"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-    <Grid>
-
+    <Grid x:Name="table">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="7*"/>
+            <RowDefinition Height="55*"/>
+        </Grid.RowDefinitions>
+        <Button Content="9x9" HorizontalAlignment="Left" Margin="40,0,0,0" VerticalAlignment="Center" Height="29" Width="85" Click="Button_Click"/>
+       
     </Grid>
 </Window>

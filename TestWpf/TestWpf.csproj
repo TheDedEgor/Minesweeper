@@ -7,4 +7,10 @@
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Reference Include="Sapper">
+      <HintPath>..\Sapper\bin\Debug\net6.0-windows\Sapper.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>
