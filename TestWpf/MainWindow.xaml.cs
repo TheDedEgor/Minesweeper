@@ -44,10 +44,20 @@ namespace TestWpf
                     label.Content = sapper.Field[i, j].ToString();
                     Grid.SetRow(label, i);
                     Grid.SetColumn(label, j);
+                    Button bt = new Button();
+                    Grid.SetRow(bt, i);
+                    Grid.SetColumn(bt, j);
+                    bt.Click += Bt_Click;
                     grid.Children.Add(label);
+                    grid.Children.Add(bt);
                 }
             }
             table.Children.Add(grid);
+        }
+        private void Bt_Click(object sender, RoutedEventArgs e)
+        {
+            var bt = (Button)sender;
+            bt.Visibility = Visibility.Collapsed;
         }
     }
 }
