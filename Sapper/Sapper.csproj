@@ -8,8 +8,19 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Data\" />
+    <None Remove="Data\Images\mine.ico" />
+    <None Remove="Data\mine.ico" />
+    <None Remove="Data\mine.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="Services\" />
+    <Folder Include="Views\Windows\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Data\Images\mine.ico" />
+    <Resource Include="Data\Images\mine.png" />
   </ItemGroup>
 
 </Project>
