@@ -12,13 +12,13 @@
     <Window.DataContext>
         <vm:MainWindowViewModel/>
     </Window.DataContext>
-    <Grid>
+    <Grid x:Name="baseGrid">
         <Grid.RowDefinitions>
-            <RowDefinition Height="89*"/>
-            <RowDefinition Height="369*"/>
+            <RowDefinition Height="47*"/>
+            <RowDefinition Height="182*"/>
         </Grid.RowDefinitions>
         <Label Content="Choose the difficulty of the game" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="0,14,0,0" FontSize="20" FontWeight="Normal" FontFamily="Baskerville Old Face" HorizontalAlignment="Center" VerticalAlignment="Top" Height="31" Width="286"/>
-        <Button Content="Beginner" HorizontalAlignment="Left" Margin="35,50,0,0" VerticalAlignment="Top" Height="29" Width="100" FontWeight="Normal" FontFamily="Dubai" FontSize="14" FontStyle="Normal" BorderThickness="2,2,2,2" Background="#FF84D0D2" BorderBrush="#FF503354">
+        <Button Command="{Binding CreateSapperFieldCommand}" Content="Beginner" HorizontalAlignment="Left" Margin="35,50,0,0" VerticalAlignment="Top" Height="29" Width="100" FontWeight="Normal" FontFamily="Dubai" FontSize="14" FontStyle="Normal" BorderThickness="2,2,2,2" Background="#FF84D0D2" BorderBrush="#FF503354">
             <Button.Effect>
                 <DropShadowEffect/>
             </Button.Effect>
@@ -33,6 +33,6 @@
                 <DropShadowEffect/>
             </Button.Effect>
         </Button>
-
+        <ContentControl Grid.Row="1" Content="{Binding Grid}"/>
     </Grid>
 </Window>

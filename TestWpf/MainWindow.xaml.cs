@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Sapper;
+using Sapper.Models;
 
 namespace TestWpf
 {
@@ -29,6 +30,9 @@ namespace TestWpf
         {
             SapperField sapper = new SapperField(Difficulty.Beginner);
             Grid grid = new Grid();
+            var image = new BitmapImage(new Uri("Data/Images/mine.png", UriKind.Relative));
+            Button[,] buttons = new Button[9,9];
+            Label[,] labels = new Label[9,9];
             for (int i = 0; i < 9; i++)
             {
                 grid.RowDefinitions.Add(new RowDefinition());
@@ -40,7 +44,7 @@ namespace TestWpf
                 for (int j = 0; j < 9; j++)
                 {
                     Label label = new Label();
-                    label.Content = sapper.Field[i, j].ToString();
+                    label.Content = sapper.Field[i, j].Value;
                     label.FontWeight = FontWeights.Bold;
                     label.HorizontalContentAlignment = HorizontalAlignment.Center;
                     label.VerticalContentAlignment = VerticalAlignment.Center;
@@ -49,38 +53,39 @@ namespace TestWpf
                     label.BorderBrush = new SolidColorBrush(Color.FromArgb(255, 68, 64, 71));
                     label.BorderThickness = new Thickness(0.5);
                     label.Background = new SolidColorBrush(Color.FromArgb(255, 197, 197, 204));
-                    if (sapper.Field[i, j] == -1)
+                    if (sapper.Field[i, j].Value == -1)
                     {
                         Image img = new Image();
-                        img.Source = BitmapFrame.Create(new Uri(@"C:\Desktop\Work_VS\MyApps\Sapper\Sapper\Data\mine.png"));
+                        img.Source = image;
                         label.Content = img;
                     }
-                    else if (sapper.Field[i, j] == 0)
+                    else if (sapper.Field[i, j].Value == 0)
                     {
                         label.Content = null;
                     }
-                    else if (sapper.Field[i, j] == 1)
+                    else if (sapper.Field[i, j].Value == 1)
                     {
                         label.Foreground = new SolidColorBrush(Color.FromArgb(255, 24, 29, 237));
                     }
-                    else if (sapper.Field[i, j] == 2)
+                    else if (sapper.Field[i, j].Value == 2)
                     {
                         label.Foreground = new SolidColorBrush(Color.FromArgb(255, 62, 151, 30));
                     }
-                    else if (sapper.Field[i, j] == 3)
+                    else if (sapper.Field[i, j].Value == 3)
                     {
                         label.Foreground = new SolidColorBrush(Color.FromArgb(255, 215, 22, 50));
                     }
-                    else if (sapper.Field[i, j] == 4)
+                    else if (sapper.Field[i, j].Value == 4)
                     {
                         label.Foreground = new SolidColorBrush(Color.FromArgb(255, 22, 41, 164));
                     }
-                    else if (sapper.Field[i, j] == 5)
+                    else if (sapper.Field[i, j].Value == 5)
                     {
                         label.Foreground = new SolidColorBrush(Color.FromArgb(255, 138, 12, 12));
                     }
                     Grid.SetRow(label, i);
                     Grid.SetColumn(label, j);
+                    labels[i, j] = label;
                     grid.Children.Add(label);
                     Button bt = new Button();
                     bt.Background = new SolidColorBrush(Color.FromArgb(255, 184, 184, 190));
@@ -88,6 +93,7 @@ namespace TestWpf
                     Grid.SetRow(bt, i);
                     Grid.SetColumn(bt, j);
                     bt.Click += Bt_Click;
+                    buttons[i,j] = bt;
                     grid.Children.Add(bt);
                 }
             }
@@ -97,6 +103,11 @@ namespace TestWpf
         {
             var bt = (Button)sender;
             bt.Visibility = Visibility.Collapsed;
+        }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }
