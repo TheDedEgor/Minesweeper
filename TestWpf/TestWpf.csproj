@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="flag.png" />
     <None Remove="mine.jpg" />
     <None Remove="mine.png" />
   </ItemGroup>
@@ -19,6 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="flag.png" />
     <Resource Include="mine.jpg" />
     <Resource Include="mine.png" />
   </ItemGroup>

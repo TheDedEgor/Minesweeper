@@ -1,61 +1,31 @@
 ﻿using System;
-using System.Windows;
 
 namespace Sapper.Models
 {
-    public class Cell
-    {
-        public sbyte Value;
-        public Visibility Visibility;
-    }
-    public enum Difficulty : byte
+    internal enum Difficulty : byte
     {
         Beginner = 10,
         Amateur = 40,
         Professional = 99
     }
-    public class SapperField
+
+    internal class SapperField
     {
-        public Cell[,] Field { get; }
+        internal readonly sbyte[,] Field;
+
+        internal readonly Difficulty Difficulty;
+
         private Random r = new Random();
+
         public SapperField(Difficulty difficulty)
         {
+            Difficulty = difficulty;
             if (difficulty == Difficulty.Beginner)
-            {
-                Field = new Cell[9, 9];
-                for (int i1 = 0; i1 < 9; i1++)
-                {
-                    for (int j = 0; j < 9; j++)
-                    {
-                        Field[i1, j] = new Cell();
-                        Field[i1, j].Visibility = Visibility.Visible;
-                    }
-                }
-            }
+                Field = new sbyte[9, 9];
             else if (difficulty == Difficulty.Amateur)
-            {
-                Field = new Cell[16, 16];
-                for (int i1 = 0; i1 < 16; i1++)
-                {
-                    for (int j = 0; j < 16; j++)
-                    {
-                        Field[i1, j] = new Cell();
-                        Field[i1, j].Visibility = Visibility.Visible;
-                    }
-                }
-            }
+                Field = new sbyte[16, 16];
             else
-            {
-                Field = new Cell[30, 16];
-                for (int i1 = 0; i1 < 30; i1++)
-                {
-                    for (int j = 0; j < 16; j++)
-                    {
-                        Field[i1, j] = new Cell();
-                        Field[i1, j].Visibility = Visibility.Visible;
-                    }
-                }
-            }
+                Field = new sbyte[30, 16];
             int i = 0;
             int imax = Field.GetLength(0);
             int jmax = Field.GetLength(1);
@@ -65,63 +35,27 @@ namespace Sapper.Models
                     i++;
             }
         }
+
         private bool SetMine(int imax, int jmax)
         {
             int idx = r.Next(0, imax);
             int jdx = r.Next(0, jmax);
-            if (Field[idx, jdx].Value != -1)
+            if (Field[idx, jdx] != -1) 
             {
-                Field[idx, jdx].Value = -1;
-                #region Increment around values 
-                try
+                Field[idx, jdx] = -1;
+                for (int i = idx - 1; i < idx + 2; i++)
                 {
-                    if (Field[idx - 1, jdx].Value != -1)
-                        Field[idx - 1, jdx].Value++;
+                    for (int j = jdx - 1; j < jdx + 2; j++)
+                    {
+                        try
+                        {
+                            if (Field[i, j] == -1)
+                                continue;
+                            Field[i, j]++;
+                        }
+                        catch { }
+                    }
                 }
-                catch { }
-                try
-                {
-                    if (Field[idx + 1, jdx].Value != -1)
-                        Field[idx + 1, jdx].Value++;
-                }
-                catch { }
-                try
-                {
-                    if (Field[idx - 1, jdx - 1].Value != -1)
-                        Field[idx - 1, jdx - 1].Value++;
-                }
-                catch { }
-                try
-                {
-                    if (Field[idx + 1, jdx + 1].Value != -1)
-                        Field[idx + 1, jdx + 1].Value++;
-                }
-                catch { }
-                try
-                {
-                    if (Field[idx, jdx - 1].Value != -1)
-                        Field[idx, jdx - 1].Value++;
-                }
-                catch { }
-                try
-                {
-                    if (Field[idx, jdx + 1].Value != -1)
-                        Field[idx, jdx + 1].Value++;
-                }
-                catch { }
-                try
-                {
-                    if (Field[idx - 1, jdx + 1].Value != -1)
-                        Field[idx - 1, jdx + 1].Value++;
-                }
-                catch { }
-                try
-                {
-                    if (Field[idx + 1, jdx - 1].Value != -1)
-                        Field[idx + 1, jdx - 1].Value++;
-                }
-                catch { }
-                #endregion
                 return true;
             }
             return false;
