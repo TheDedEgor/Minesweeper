@@ -17,6 +17,8 @@
   <ItemGroup>
     <Folder Include="Services\" />
     <Folder Include="Views\Windows\" />
+    <Folder Include="Services\" />
+    <Folder Include="Views\Windows\" />
   </ItemGroup>
 
   <ItemGroup>
