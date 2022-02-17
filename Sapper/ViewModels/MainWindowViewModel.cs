@@ -34,7 +34,7 @@ namespace Sapper.ViewModels
             set => Set(ref _grid, value);
         }
 
-        private double _heightWindow = 650;
+        private double _heightWindow = 600;
 
         public double HeightWindow
         {
@@ -42,7 +42,7 @@ namespace Sapper.ViewModels
             set => Set(ref _heightWindow, value);
         }
 
-        private double _widthWindow = 530;
+        private double _widthWindow = 600;
 
         public double WidthWindow
         {

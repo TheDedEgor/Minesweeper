@@ -7,7 +7,8 @@
         xmlns:vm="clr-namespace:Sapper.ViewModels"
         mc:Ignorable="d"
         Title="Sapper" 
-        Height="600" Width="600"
+        Height="{Binding HeightWindow, Mode=TwoWay}"
+        Width="{Binding WidthWindow, Mode=TwoWay}"
         Icon="Data/Images/mine.ico" FontWeight="Normal" Background="#FFA39D9D" HorizontalAlignment="Center" VerticalAlignment="Center">
     <Window.DataContext>
         <vm:MainWindowViewModel/>
