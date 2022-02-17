@@ -25,7 +25,7 @@ namespace Sapper.Models
             else if (difficulty == Difficulty.Amateur)
                 Field = new sbyte[16, 16];
             else
-                Field = new sbyte[30, 16];
+                Field = new sbyte[16, 30];
             int i = 0;
             int imax = Field.GetLength(0);
             int jmax = Field.GetLength(1);

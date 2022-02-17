@@ -34,6 +34,22 @@ namespace Sapper.ViewModels
             set => Set(ref _grid, value);
         }
 
+        private double _heightWindow = 650;
+
+        public double HeightWindow
+        {
+            get => _heightWindow;
+            set => Set(ref _heightWindow, value);
+        }
+
+        private double _widthWindow = 530;
+
+        public double WidthWindow
+        {
+            get => _widthWindow;
+            set => Set(ref _widthWindow, value);
+        }
+
         #endregion
 
         #region Commands
@@ -236,7 +252,7 @@ namespace Sapper.ViewModels
                 {
                     for (int j = 0; j < 9; j++)
                     {
-                        CreateLabel(image, i, j);
+                        CreateLabel(image, i, j, 0);
                         CreateButton(i, j);
                     }
                 }
@@ -248,7 +264,7 @@ namespace Sapper.ViewModels
                 {
                     for (int j = 0; j < 16; j++)
                     {
-                        CreateLabel(image, i, j);
+                        CreateLabel(image, i, j, 1);
                         CreateButton(i, j);
                     }
                 }
@@ -256,11 +272,11 @@ namespace Sapper.ViewModels
             else
             {
                 CountCloseCells = 480 - (byte)Difficulty.Professional;
-                for (int i = 0; i < 30; i++)
+                for (int i = 0; i < 16; i++)
                 {
-                    for (int j = 0; j < 16; j++)
+                    for (int j = 0; j < 30; j++)
                     {
-                        CreateLabel(image, i, j);
+                        CreateLabel(image, i, j, 2);
                         CreateButton(i, j);
                     }
                 }
@@ -283,14 +299,19 @@ namespace Sapper.ViewModels
             _grid.Children.Add(button);
         }
 
-        private void CreateLabel(BitmapImage image, int i, int j)
+        private void CreateLabel(BitmapImage image, int i, int j, int size)
         {
             Label label = new Label();
             label.Content = Sapper.Field[i, j];
             label.FontWeight = FontWeights.Bold;
             label.HorizontalContentAlignment = HorizontalAlignment.Center;
             label.VerticalContentAlignment = VerticalAlignment.Center;
-            label.FontSize = 20;
+            if (size == 1)
+                label.FontSize = 15;
+            else if (size == 2)
+                label.FontSize = 10;
+            else
+                label.FontSize = 20;
             label.Foreground = new SolidColorBrush(Color.FromArgb(255, 24, 29, 237));
             label.BorderBrush = new SolidColorBrush(Color.FromArgb(255, 68, 64, 71));
             label.BorderThickness = new Thickness(0.5);
@@ -360,13 +381,13 @@ namespace Sapper.ViewModels
             }
             else
             {
-                Buttons = new Button[30, 16];
-                Labels = new Label[30, 16];
-                for (int i = 0; i < 30; i++)
+                Buttons = new Button[16, 30];
+                Labels = new Label[16, 30];
+                for (int i = 0; i < 16; i++)
                 {
                     _grid.RowDefinitions.Add(new RowDefinition());
                 }
-                for (int i = 0; i < 16; i++)
+                for (int i = 0; i < 30; i++)
                 {
                     _grid.ColumnDefinitions.Add(new ColumnDefinition());
                 }
