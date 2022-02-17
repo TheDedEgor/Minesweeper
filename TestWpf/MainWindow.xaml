@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TestWpf"
         mc:Ignorable="d"
-        Title="MainWindow" Height="489" Width="559">
+        Title="MainWindow" Height="489" Width="559"
+        x:Name="window">
     <Grid x:Name="table" Background="#FF6C6363">
         <Grid.RowDefinitions>
             <RowDefinition Height="7*"/>
@@ -14,8 +15,6 @@
         <Button Content="9x9" HorizontalAlignment="Left" Margin="40,0,0,0" VerticalAlignment="Center" Height="29" Width="85" Click="Button_Click"/>
         <Button Content="Replay" HorizontalAlignment="Left" Margin="160,0,0,0" VerticalAlignment="Center" RenderTransformOrigin="0.505,0.503" Height="34" Width="95" Background="#FF5AAAB4" BorderBrush="#FF8B19E0" Click="Button_Click_1" FontSize="20" FontFamily="Book Antiqua"/>
         <Label Content="5" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="280,10,0,0" VerticalAlignment="Top" Width="34" Foreground="#FFFA0A0A" FontSize="20" BorderBrush="#FFA74B4B" FontWeight="Bold" Background="#FFB2A8A8"/>
-        <Image HorizontalAlignment="Left" Height="31" Margin="350,0,0,0" VerticalAlignment="Center" Width="36" RenderTransformOrigin="0.444,0.501" Source="/mine.png"/>
-        <Image HorizontalAlignment="Left" Height="33" Margin="430,0,0,0" VerticalAlignment="Center" Width="25" RenderTransformOrigin="0.5,0.49" Source="/flag.png"/>
 
     </Grid>
 </Window>

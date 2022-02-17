@@ -7,33 +7,49 @@
         xmlns:vm="clr-namespace:Sapper.ViewModels"
         mc:Ignorable="d"
         Title="Sapper" 
-        Height="{Binding HeightWindow, Mode=TwoWay}"
-        Width="{Binding WidthWindow, Mode=TwoWay}"
+        Height="{Binding HeightWindow, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+        Width="{Binding WidthWindow, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+        MinHeight="{Binding MinHeightWindow, Mode=TwoWay}"
+        MinWidth="{Binding MinWidthWindow, Mode=TwoWay}"
         Icon="Data/Images/mine.ico" FontWeight="Normal" Background="#FFA39D9D" HorizontalAlignment="Center" VerticalAlignment="Center">
     <Window.DataContext>
         <vm:MainWindowViewModel/>
     </Window.DataContext>
     <Grid x:Name="baseGrid">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="1*"/>
+        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="47*"/>
-            <RowDefinition Height="182*"/>
+            <RowDefinition Height="27*"/>
+            <RowDefinition Height="33*"/>
+            <RowDefinition Height="232*"/>
         </Grid.RowDefinitions>
-        <Label Content="Choose the difficulty of the game" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="0,14,0,0" FontSize="24" FontWeight="Normal" FontFamily="Baskerville Old Face" HorizontalAlignment="Center" VerticalAlignment="Top" Height="41" Width="340"/>
-        <Button Command="{Binding CreateSapperFieldCommand}" CommandParameter="Beginner" Content="Beginner" HorizontalAlignment="Left" Margin="35,60,0,0" VerticalAlignment="Top" Height="39" Width="110" FontWeight="Normal" FontFamily="Dubai" FontSize="14" FontStyle="Normal" BorderThickness="2,2,2,2" Background="#FF84D0D2" BorderBrush="#FF503354">
-            <Button.Effect>
-                <DropShadowEffect/>
-            </Button.Effect>
-        </Button>
-        <Button Command="{Binding CreateSapperFieldCommand }" CommandParameter="Amateur" Content="Amateur" HorizontalAlignment="Center" Margin="0,60,0,0" VerticalAlignment="Top" Height="39" Width="110" FontWeight="Normal" FontFamily="Dubai" FontSize="14" FontStyle="Normal" BorderThickness="2,2,2,2" Background="#FFB7CB4F" BorderBrush="#FF503354">
-            <Button.Effect>
-                <DropShadowEffect/>
-            </Button.Effect>
-        </Button>
-        <Button Command="{Binding CreateSapperFieldCommand}" CommandParameter="Professional" Content="Professional" HorizontalAlignment="Right" Margin="0,60,45,0" VerticalAlignment="Top" Height="39" Width="110" FontWeight="Normal" FontFamily="Dubai" FontSize="14" FontStyle="Normal" BorderThickness="2,2,2,2" Background="#FFC95A5A" BorderBrush="#FF503354">
-            <Button.Effect>
-                <DropShadowEffect/>
-            </Button.Effect>
-        </Button>
-        <ContentControl Grid.Row="1" Content="{Binding GridSapper, Mode=OneWay}"/>
+        <Viewbox Grid.Row="0" Grid.ColumnSpan="3">
+            <Label Content="Choose the difficulty of the game" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"  FontWeight="Bold" FontFamily="Baskerville Old Face" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        </Viewbox>
+        <Viewbox Grid.Row="1">
+            <Button  Command="{Binding CreateSapperFieldCommand}" CommandParameter="Beginner" Content="Beginner" FontWeight="Normal" FontFamily="Dubai" FontStyle="Normal" BorderThickness="2,2,2,2" Background="#FF84D0D2" BorderBrush="#FF503354" Margin="0,7,0,7" Padding="5,1,5,1">
+                <Button.Effect>
+                    <DropShadowEffect/>
+                </Button.Effect>
+            </Button>
+        </Viewbox>
+        <Viewbox Grid.Row="1" Grid.Column="1">
+            <Button Command="{Binding CreateSapperFieldCommand }" CommandParameter="Amateur" Content="Amateur" FontWeight="Normal" FontFamily="Dubai" FontStyle="Normal" BorderThickness="2,2,2,2" Background="#FFB7CB4F" BorderBrush="#FF503354" Margin="0,7,0,7" Padding="5,1,5,1" >
+                <Button.Effect>
+                    <DropShadowEffect/>
+                </Button.Effect>
+            </Button>
+        </Viewbox>
+        <Viewbox Grid.Row="1" Grid.Column="2">
+            <Button  Command="{Binding CreateSapperFieldCommand}" CommandParameter="Professional" Content="Professional" FontWeight="Normal" FontFamily="Dubai" FontSize="14" FontStyle="Normal" BorderThickness="2,2,2,2" Background="#FFC95A5A" BorderBrush="#FF503354" Margin="0,7,0,7" Padding="5,1,5,1">
+                <Button.Effect>
+                    <DropShadowEffect/>
+                </Button.Effect>
+            </Button>
+        </Viewbox>
+        <ContentControl Grid.Row="2" Grid.ColumnSpan="3" Content="{Binding GridSapper, Mode=OneWay}"/>
     </Grid>
 </Window>

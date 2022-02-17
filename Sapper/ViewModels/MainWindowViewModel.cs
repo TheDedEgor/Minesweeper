@@ -7,6 +7,7 @@ using System.Windows.Media;
 using Sapper.Models;
 using System.Windows.Media.Imaging;
 using System;
+using System.Windows.Data;
 
 namespace Sapper.ViewModels
 {
@@ -18,7 +19,7 @@ namespace Sapper.ViewModels
 
         private Button[,] Buttons;
 
-        private Label[,] Labels;
+        private Border[,] Borders;
 
         private int CountCloseCells;
 
@@ -32,6 +33,22 @@ namespace Sapper.ViewModels
         {
             get => _grid;
             set => Set(ref _grid, value);
+        }
+
+        private double _minHeightWindow = 600;
+
+        public double MinHeightWindow
+        {
+            get => _minHeightWindow;
+            set => Set(ref _minHeightWindow, value);
+        }
+
+        private double _minWidthWindow = 600;
+
+        public double MinWidthWindow
+        {
+            get => _minWidthWindow;
+            set => Set(ref _minWidthWindow, value);
         }
 
         private double _heightWindow = 600;
@@ -108,12 +125,12 @@ namespace Sapper.ViewModels
                 CountCloseCells--;
                 if (Sapper.Field[idx, jdx] == -1)
                 {
-                    Labels[idx, jdx].Background = new SolidColorBrush(Color.FromArgb(255, 209, 99, 99));
-                    for (int i = 0; i < Labels.GetLength(0); i++)
+                    Borders[idx, jdx].Background = new SolidColorBrush(Color.FromArgb(255, 209, 99, 99));
+                    for (int i = 0; i < Borders.GetLength(0); i++)
                     {
-                        for (int j = 0; j < Labels.GetLength(1); j++)
+                        for (int j = 0; j < Borders.GetLength(1); j++)
                         {
-                            if (Labels[i, j].Uid == "mine")
+                            if (Borders[i, j].Uid == "mine")
                                 Buttons[i, j].Visibility = Visibility.Collapsed;
                         }
                     }
@@ -138,11 +155,29 @@ namespace Sapper.ViewModels
             {
                 var difficult = (string)p;
                 if (difficult == "Beginner")
+                {
+                    HeightWindow = 600;
+                    WidthWindow = 600;
+                    MinHeightWindow = 600;
+                    MinWidthWindow = 600;
                     Sapper = new SapperField(Difficulty.Beginner);
+                }
                 else if (difficult == "Amateur")
+                {
+                    HeightWindow = 700;
+                    WidthWindow = 800;
+                    MinHeightWindow = 700;
+                    MinWidthWindow = 800;
                     Sapper = new SapperField(Difficulty.Amateur);
+                }
                 else
+                {
+                    HeightWindow = 750;
+                    WidthWindow = 1100;
+                    MinHeightWindow = 750;
+                    MinWidthWindow = 1100;
                     Sapper = new SapperField(Difficulty.Professional);
+                }
                 CreateGridSapper();
                 FillingGridSapper();
             }
@@ -252,7 +287,7 @@ namespace Sapper.ViewModels
                 {
                     for (int j = 0; j < 9; j++)
                     {
-                        CreateLabel(image, i, j, 0);
+                        CreateLabel(image, i, j);
                         CreateButton(i, j);
                     }
                 }
@@ -264,7 +299,7 @@ namespace Sapper.ViewModels
                 {
                     for (int j = 0; j < 16; j++)
                     {
-                        CreateLabel(image, i, j, 1);
+                        CreateLabel(image, i, j);
                         CreateButton(i, j);
                     }
                 }
@@ -276,7 +311,7 @@ namespace Sapper.ViewModels
                 {
                     for (int j = 0; j < 30; j++)
                     {
-                        CreateLabel(image, i, j, 2);
+                        CreateLabel(image, i, j);
                         CreateButton(i, j);
                     }
                 }
@@ -299,29 +334,19 @@ namespace Sapper.ViewModels
             _grid.Children.Add(button);
         }
 
-        private void CreateLabel(BitmapImage image, int i, int j, int size)
+        private void CreateLabel(BitmapImage image, int i, int j)
         {
             Label label = new Label();
+            Border border = new Border();
             label.Content = Sapper.Field[i, j];
             label.FontWeight = FontWeights.Bold;
-            label.HorizontalContentAlignment = HorizontalAlignment.Center;
-            label.VerticalContentAlignment = VerticalAlignment.Center;
-            if (size == 1)
-                label.FontSize = 15;
-            else if (size == 2)
-                label.FontSize = 10;
-            else
-                label.FontSize = 20;
             label.Foreground = new SolidColorBrush(Color.FromArgb(255, 24, 29, 237));
-            label.BorderBrush = new SolidColorBrush(Color.FromArgb(255, 68, 64, 71));
-            label.BorderThickness = new Thickness(0.5);
-            label.Background = new SolidColorBrush(Color.FromArgb(255, 197, 197, 204));
             if (Sapper.Field[i, j] == -1)
             {
                 Image img = new Image();
                 img.Source = image;
                 label.Content = img;
-                label.Uid = $"mine";
+                border.Uid = $"mine";
             }
             else if (Sapper.Field[i, j] == 0)
             {
@@ -351,10 +376,16 @@ namespace Sapper.ViewModels
             {
                 label.Foreground = new SolidColorBrush(Color.FromArgb(255, 250, 10, 10));
             }
-            Grid.SetRow(label, i);
-            Grid.SetColumn(label, j);
-            Labels[i, j] = label;
-            _grid.Children.Add(label);
+            Viewbox viewbox = new Viewbox();
+            viewbox.Child = label;
+            border.BorderBrush = new SolidColorBrush(Color.FromArgb(255, 68, 64, 71));
+            border.BorderThickness = new Thickness(0.5);
+            border.Background = new SolidColorBrush(Color.FromArgb(255, 197, 197, 204));
+            border.Child = viewbox;
+            Grid.SetRow(border, i);
+            Grid.SetColumn(border, j);
+            Borders[i, j] = border;
+            _grid.Children.Add(border);
         }
 
         private void CreateGridSapper()
@@ -362,7 +393,7 @@ namespace Sapper.ViewModels
             if (Sapper.Difficulty == Difficulty.Beginner)
             {
                 Buttons = new Button[9, 9];
-                Labels = new Label[9, 9];
+                Borders = new Border[9, 9];
                 for (int i = 0; i < 9; i++)
                 {
                     _grid.RowDefinitions.Add(new RowDefinition());
@@ -372,7 +403,7 @@ namespace Sapper.ViewModels
             else if (Sapper.Difficulty == Difficulty.Amateur)
             {
                 Buttons = new Button[16, 16];
-                Labels = new Label[16, 16];
+                Borders = new Border[16, 16];
                 for (int i = 0; i < 16; i++)
                 {
                     _grid.RowDefinitions.Add(new RowDefinition());
@@ -382,7 +413,7 @@ namespace Sapper.ViewModels
             else
             {
                 Buttons = new Button[16, 30];
-                Labels = new Label[16, 30];
+                Borders = new Border[16, 30];
                 for (int i = 0; i < 16; i++)
                 {
                     _grid.RowDefinitions.Add(new RowDefinition());
