@@ -50,6 +50,11 @@
                 </Button.Effect>
             </Button>
         </Viewbox>
-        <ContentControl Grid.Row="2" Grid.ColumnSpan="3" Content="{Binding GridSapper, Mode=OneWay}"/>
+        <Border Grid.Row="2" Grid.ColumnSpan="3" BorderBrush="#FFB150C8" BorderThickness="3,3,3,3">
+            <Border.Background>
+                <ImageBrush ImageSource="/Data/Images/main.jpg"/>
+            </Border.Background>
+            <ContentControl  Content="{Binding GridSapper, Mode=OneWay}"/>
+        </Border>
     </Grid>
 </Window>

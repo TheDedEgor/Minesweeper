@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <None Remove="Data\Images\flag.png" />
+    <None Remove="Data\Images\main.jpg" />
     <None Remove="Data\Images\mine.ico" />
     <None Remove="Data\mine.ico" />
     <None Remove="Data\mine.png" />
@@ -23,6 +24,7 @@
 
   <ItemGroup>
     <Resource Include="Data\Images\flag.png" />
+    <Resource Include="Data\Images\main.jpg" />
     <Resource Include="Data\Images\mine.ico" />
     <Resource Include="Data\Images\mine.png" />
   </ItemGroup>

@@ -15,6 +15,8 @@
         <Button Content="9x9" HorizontalAlignment="Left" Margin="40,0,0,0" VerticalAlignment="Center" Height="29" Width="85" Click="Button_Click"/>
         <Button Content="Replay" HorizontalAlignment="Left" Margin="160,0,0,0" VerticalAlignment="Center" RenderTransformOrigin="0.505,0.503" Height="34" Width="95" Background="#FF5AAAB4" BorderBrush="#FF8B19E0" Click="Button_Click_1" FontSize="20" FontFamily="Book Antiqua"/>
         <Label Content="5" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="280,10,0,0" VerticalAlignment="Top" Width="34" Foreground="#FFFA0A0A" FontSize="20" BorderBrush="#FFA74B4B" FontWeight="Bold" Background="#FFB2A8A8"/>
-
+        <Border BorderThickness="1" Grid.Row="1">
+           
+        </Border>
     </Grid>
 </Window>
