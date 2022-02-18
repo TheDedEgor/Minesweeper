@@ -91,6 +91,66 @@ namespace Sapper.ViewModels
             Application.Current.Shutdown();
         }
 
+        public ICommand ClickLabelCommand { get; }
+
+        private bool CanClickLabelCommandExecute(object p) => true;
+
+        private void OnClickLabelCommandExecuted(object p)
+        {
+            var label = (Label)p;
+            var cords = label.Uid.Split('-');
+            int idx = int.Parse(cords[0]);
+            int jdx = int.Parse(cords[1]);
+            sbyte count = 0;
+            for (int i = idx - 1; i < idx + 2; i++)
+            {
+                for (int j = jdx - 1; j < jdx + 2; j++)
+                {
+                    try
+                    {
+                        if (Buttons[i, j].Content != null)
+                            count++;
+                    }
+                    catch { }
+                }
+            }
+            if(count == Sapper.Field[idx,jdx])
+            {
+                for (int i = idx - 1; i < idx + 2; i++)
+                {
+                    for (int j = jdx - 1; j < jdx + 2; j++)
+                    {
+                        try
+                        {
+                            if (Buttons[i, j].Content != null)
+                                continue;
+                            else
+                            {
+                                if (Borders[i, j].Uid.Contains("mine"))
+                                {
+                                    Buttons[i, j].Visibility = Visibility.Collapsed;
+                                    _grid.Children.Add(CreateBlockedGrid());
+                                }
+                                else if (Sapper.Field[i, j] == 0)
+                                {
+                                    Buttons[i, j].Visibility = Visibility.Collapsed;
+                                    CountCloseCells--;
+                                    OpeningRecursion(i, j);
+                                }
+                                else
+                                {
+                                    Buttons[i, j].Visibility = Visibility.Collapsed;
+                                    CountCloseCells--;
+                                    continue;
+                                }
+                            }
+                        }
+                        catch { }
+                    }
+                }
+            }
+        }
+
         public ICommand SetFlagCommand { get; }
 
         private bool CanSetFlagCommandExecute(object p) => true;
@@ -100,8 +160,8 @@ namespace Sapper.ViewModels
             var button = (Button)p;
             if(button.Content == null)
             {
-                Image image = new Image() { Source = new BitmapImage(new Uri("Data/Images/flag.png", UriKind.Relative)) };
-                button.Content = image;
+                Image flagImage = new Image() { Source = new BitmapImage(new Uri("Data/Images/flag.png", UriKind.Relative)) };
+                button.Content = flagImage;
             }
             else
             {
@@ -130,7 +190,7 @@ namespace Sapper.ViewModels
                     {
                         for (int j = 0; j < Borders.GetLength(1); j++)
                         {
-                            if (Borders[i, j].Uid == "mine")
+                            if (Borders[i, j].Uid.Contains("mine"))
                                 Buttons[i, j].Visibility = Visibility.Collapsed;
                         }
                     }
@@ -339,6 +399,7 @@ namespace Sapper.ViewModels
             Label label = new Label();
             Border border = new Border();
             label.Content = Sapper.Field[i, j];
+            label.Uid = $"{i}-{j}";
             label.FontWeight = FontWeights.Bold;
             label.Foreground = new SolidColorBrush(Color.FromArgb(255, 24, 29, 237));
             if (Sapper.Field[i, j] == -1)
@@ -346,7 +407,7 @@ namespace Sapper.ViewModels
                 Image img = new Image();
                 img.Source = image;
                 label.Content = img;
-                border.Uid = $"mine";
+                border.Uid = $"{i}-{j}-mine";
             }
             else if (Sapper.Field[i, j] == 0)
             {
@@ -381,6 +442,7 @@ namespace Sapper.ViewModels
             border.BorderBrush = new SolidColorBrush(Color.FromArgb(255, 68, 64, 71));
             border.BorderThickness = new Thickness(0.5);
             border.Background = new SolidColorBrush(Color.FromArgb(255, 197, 197, 204));
+            border.InputBindings.Add(new MouseBinding() { Command = ClickLabelCommand, MouseAction = MouseAction.LeftClick, CommandParameter = label });
             border.Child = viewbox;
             Grid.SetRow(border, i);
             Grid.SetColumn(border, j);
@@ -436,6 +498,7 @@ namespace Sapper.ViewModels
             SetFlagCommand = new LambdaCommand(OnSetFlagCommandExecuted, CanSetFlagCommandExecute);
             CloseAppCommand = new LambdaCommand(OnCloseAppCommandExecuted, CanCloseAppCommandExecute);
             ReplayGameCommand = new LambdaCommand(OnReplayGameCommandExecuted, CanReplayGameCommandExecute);
+            ClickLabelCommand = new LambdaCommand(OnClickLabelCommandExecuted, CanClickLabelCommandExecute);
 
             #endregion
         }
