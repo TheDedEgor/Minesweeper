@@ -1,17 +1,25 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using Sapper.Infrastructure.Commands;
+using Sapper.ViewModels.Base;
 
 namespace Sapper.Models
 {
-    internal enum Difficulty : byte
+    public enum Difficulty : byte
     {
         Beginner = 10,
         Amateur = 40,
         Professional = 99
     }
-
+    
     internal class SapperField
     {
-        internal readonly sbyte[,] Field;
+        public readonly sbyte[,] Field;
 
         internal readonly Difficulty Difficulty;
 

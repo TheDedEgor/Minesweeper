@@ -110,5 +110,10 @@ namespace TestWpf
             window.Height = 300;
             window.Width = 300;
         }
+
+        private void Button_Click_2(object sender, RoutedEventArgs e)
+        {
+            border.Visibility = Visibility.Collapsed;
+        }
     }
 }

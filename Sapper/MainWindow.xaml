@@ -7,54 +7,82 @@
         xmlns:vm="clr-namespace:Sapper.ViewModels"
         mc:Ignorable="d"
         Title="Sapper" 
-        Height="{Binding HeightWindow, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-        Width="{Binding WidthWindow, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-        MinHeight="{Binding MinHeightWindow, Mode=TwoWay}"
-        MinWidth="{Binding MinWidthWindow, Mode=TwoWay}"
-        Icon="Data/Images/mine.ico" FontWeight="Normal" Background="#FFA39D9D" HorizontalAlignment="Center" VerticalAlignment="Center">
+        Height="600"
+        Width="600"
+        Icon="Data/Images/mine.ico" FontWeight="Normal" HorizontalAlignment="Center" VerticalAlignment="Center">
     <Window.DataContext>
         <vm:MainWindowViewModel/>
     </Window.DataContext>
-    <Grid x:Name="baseGrid">
+    <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="1*"/>
-            <ColumnDefinition Width="1*"/>
-            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="27*"/>
-            <RowDefinition Height="33*"/>
-            <RowDefinition Height="232*"/>
+            <RowDefinition/>
         </Grid.RowDefinitions>
-        <Viewbox Grid.Row="0" Grid.ColumnSpan="3">
-            <Label Content="Choose the difficulty of the game" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"  FontWeight="Bold" FontFamily="Baskerville Old Face" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-        </Viewbox>
-        <Viewbox Grid.Row="1">
-            <Button  Command="{Binding CreateSapperFieldCommand}" CommandParameter="Beginner" Content="Beginner" FontWeight="Normal" FontFamily="Dubai" FontStyle="Normal" BorderThickness="2,2,2,2" Background="#FF84D0D2" BorderBrush="#FF503354" Margin="0,7,0,7" Padding="5,1,5,1">
-                <Button.Effect>
-                    <DropShadowEffect/>
-                </Button.Effect>
-            </Button>
-        </Viewbox>
-        <Viewbox Grid.Row="1" Grid.Column="1">
-            <Button Command="{Binding CreateSapperFieldCommand }" CommandParameter="Amateur" Content="Amateur" FontWeight="Normal" FontFamily="Dubai" FontStyle="Normal" BorderThickness="2,2,2,2" Background="#FFB7CB4F" BorderBrush="#FF503354" Margin="0,7,0,7" Padding="5,1,5,1" >
-                <Button.Effect>
-                    <DropShadowEffect/>
-                </Button.Effect>
-            </Button>
-        </Viewbox>
-        <Viewbox Grid.Row="1" Grid.Column="2">
-            <Button  Command="{Binding CreateSapperFieldCommand}" CommandParameter="Professional" Content="Professional" FontWeight="Normal" FontFamily="Dubai" FontSize="14" FontStyle="Normal" BorderThickness="2,2,2,2" Background="#FFC95A5A" BorderBrush="#FF503354" Margin="0,7,0,7" Padding="5,1,5,1">
-                <Button.Effect>
-                    <DropShadowEffect/>
-                </Button.Effect>
-            </Button>
-        </Viewbox>
-        <Border Grid.Row="2" Grid.ColumnSpan="3" BorderBrush="#FFB150C8" BorderThickness="3,3,3,3">
-            <Border.Background>
-                <ImageBrush ImageSource="/Data/Images/main.jpg"/>
-            </Border.Background>
-            <ContentControl  Content="{Binding GridSapper, Mode=OneWay}"/>
-        </Border>
+        <TabControl Background="{x:Null}" BorderBrush="{x:Null}" Foreground="{x:Null}">
+            <TabItem Header="Beginner">
+                <Border BorderThickness="5,5,5,5">
+                    <Border.BorderBrush>
+                        <LinearGradientBrush EndPoint="0.937,1" StartPoint="0.063,0">
+                            <GradientStop Color="White" Offset="0.5"/>
+                            <GradientStop Color="Gray" Offset="0.5"/>
+                        </LinearGradientBrush>
+                    </Border.BorderBrush>
+                    <Border BorderBrush="#FFC6C6C6" BorderThickness="10,10,10,10">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="42*"/>
+                                <RowDefinition Height="221*"/>
+                            </Grid.RowDefinitions>
+                            <Border Grid.Row="0" BorderBrush="#FFC6C6C6" BorderThickness="0,0,0,10">
+                                <Button Content="Start" Command="{Binding CreateSapperFieldCommand}" CommandParameter="Beginner" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                            <Border BorderThickness="5,5,5,5" Grid.Row="2">
+                                <Border.BorderBrush>
+                                    <LinearGradientBrush MappingMode="RelativeToBoundingBox" StartPoint="0.22,0" EndPoint="0.78,1">
+                                        <GradientStop Color="Gray" Offset="0.5"/>
+                                        <GradientStop Color="White" Offset="0.5"/>
+                                    </LinearGradientBrush>
+                                </Border.BorderBrush>
+                                <ItemsControl ItemsSource="{Binding AllCells}">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <UniformGrid Rows="9" Columns="9" />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid>
+                                                <Label x:Name="label" Content="{Binding Value}" Foreground="{Binding Foreground}" Uid="{Binding Uid}" FontWeight="Bold" FontSize="22" Background="{Binding Background}" BorderBrush="Gray" BorderThickness="1,1,1,1" VerticalContentAlignment="Center" HorizontalContentAlignment="Center">
+                                                    <Label.InputBindings>
+                                                        <MouseBinding MouseAction="LeftClick" Command="{Binding ClickLabelCommand}" CommandParameter="{Binding ElementName=label}"/>
+                                                    </Label.InputBindings>
+                                                </Label>
+                                                <Border x:Name="border" Visibility="{Binding Visibility}" Uid="{Binding Uid}" Background="#FFC6C6C6" BorderThickness="4,4,4,4" >
+                                                    <Border.InputBindings>
+                                                        <MouseBinding MouseAction="RightClick" Command="{Binding SetFlagCommand }" CommandParameter="{Binding ElementName=border}"/>
+                                                        <MouseBinding MouseAction="LeftClick" Command="{Binding ClickButtonCommand }" CommandParameter="{Binding ElementName=border}"/>
+                                                    </Border.InputBindings>
+                                                    <Border.BorderBrush>
+                                                        <LinearGradientBrush EndPoint="0.8,1" StartPoint="0.23,0">
+                                                            <GradientStop Color="White" Offset="0.5"/>
+                                                            <GradientStop Color="Gray" Offset="0.5"/>
+                                                        </LinearGradientBrush>
+                                                    </Border.BorderBrush>
+                                                </Border>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </Border>
+                        </Grid>
+                    </Border>
+                </Border>
+            </TabItem>
+            <TabItem Header="Amateur">
+                <Grid Background="#FFE5E5E5"/>
+            </TabItem>
+        </TabControl>
     </Grid>
 </Window>

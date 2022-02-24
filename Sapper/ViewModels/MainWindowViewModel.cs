@@ -7,7 +7,8 @@ using System.Windows.Media;
 using Sapper.Models;
 using System.Windows.Media.Imaging;
 using System;
-using System.Windows.Data;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Sapper.ViewModels
 {
@@ -15,11 +16,7 @@ namespace Sapper.ViewModels
     {
         #region Fields
 
-        private SapperField Sapper;
-
-        private Button[,] Buttons;
-
-        private Border[,] Borders;
+        private SapperField Sapper = new(Difficulty.Beginner);
 
         private int CountCloseCells;
 
@@ -27,13 +24,9 @@ namespace Sapper.ViewModels
 
         #region Properties
 
-        private Grid _grid = new Grid();
+        private CellVM[,] _cells;
 
-        public Grid GridSapper
-        {
-            get => _grid;
-            set => Set(ref _grid, value);
-        }
+        public IEnumerable<CellVM> AllCells => _cells.Cast<CellVM>();
 
         private double _minHeightWindow = 600;
 
@@ -71,16 +64,16 @@ namespace Sapper.ViewModels
 
         #region Commands
 
-        public ICommand ReplayGameCommand { get; }
+        //public ICommand ReplayGameCommand { get; }
 
-        private bool CanReplayGameCommandExecute(object p) => true;
+        //private bool CanReplayGameCommandExecute(object p) => true;
 
-        private void OnReplayGameCommandExecuted(object p)
-        {
-            _grid.Children.Clear();
-            _grid.RowDefinitions.Clear();
-            _grid.ColumnDefinitions.Clear();
-        }
+        //private void OnReplayGameCommandExecuted(object p)
+        //{
+        //    _grid.Children.Clear();
+        //    _grid.RowDefinitions.Clear();
+        //    _grid.ColumnDefinitions.Clear();
+        //}
 
         public ICommand CloseAppCommand { get; }
 
@@ -91,7 +84,7 @@ namespace Sapper.ViewModels
             Application.Current.Shutdown();
         }
 
-        public ICommand ClickLabelCommand { get; }
+        #region ClickLabelCommand
 
         private bool CanClickLabelCommandExecute(object p) => true;
 
@@ -108,13 +101,13 @@ namespace Sapper.ViewModels
                 {
                     try
                     {
-                        if (Buttons[i, j].Content != null)
+                        if (_cells[i,j].IsFlag)
                             count++;
                     }
                     catch { }
                 }
             }
-            if(count == Sapper.Field[idx,jdx])
+            if (count == Sapper.Field[idx, jdx])
             {
                 for (int i = idx - 1; i < idx + 2; i++)
                 {
@@ -122,24 +115,26 @@ namespace Sapper.ViewModels
                     {
                         try
                         {
-                            if (Buttons[i, j].Content != null)
+                            if (_cells[i, j].IsFlag)
                                 continue;
                             else
                             {
-                                if (Borders[i, j].Uid.Contains("mine"))
+                                if (_cells[i, j].Uid.Contains("mine"))
                                 {
-                                    Buttons[i, j].Visibility = Visibility.Collapsed;
-                                    _grid.Children.Add(CreateBlockedGrid());
+                                    _cells[i, j].Visibility = Visibility.Collapsed;
+                                    _cells[i, j].Background = new SolidColorBrush(Color.FromArgb(255, 209, 99, 99));
+                                    ShowAllMines();
+                                    //_grid.Children.Add(CreateBlockedGrid());
                                 }
                                 else if (Sapper.Field[i, j] == 0)
                                 {
-                                    Buttons[i, j].Visibility = Visibility.Collapsed;
+                                    _cells[i, j].Visibility = Visibility.Collapsed;
                                     CountCloseCells--;
                                     OpeningRecursion(i, j);
                                 }
                                 else
                                 {
-                                    Buttons[i, j].Visibility = Visibility.Collapsed;
+                                    _cells[i, j].Visibility = Visibility.Collapsed;
                                     CountCloseCells--;
                                     continue;
                                 }
@@ -151,163 +146,228 @@ namespace Sapper.ViewModels
             }
         }
 
-        public ICommand SetFlagCommand { get; }
+        #endregion
+
+        #region SetFlagCommand
 
         private bool CanSetFlagCommandExecute(object p) => true;
 
         private void OnSetFlagCommandExecuted(object p)
         {
-            var button = (Button)p;
-            if(button.Content == null)
+            var border = (Border)p;
+            var cords = border.Uid.Split('-');
+            int idx = int.Parse(cords[0]);
+            int jdx = int.Parse(cords[1]);
+            if (!_cells[idx,jdx].IsFlag)
             {
                 Image flagImage = new Image() { Source = new BitmapImage(new Uri("Data/Images/flag.png", UriKind.Relative)) };
-                button.Content = flagImage;
+                border.Child = flagImage;
+                _cells[idx, jdx].IsFlag = true;
             }
             else
             {
-                button.Content = null;
+                border.Child = null;
+                _cells[idx, jdx].IsFlag = false;
             }
         }
 
-        public ICommand ClickButtonCommand { get; }
+        #endregion
 
-        private bool CanClickButtonCommandExecute(object p) => true;
+        #region ClickBorderCommand
 
-        private void OnClickButtonCommandExecuted(object p)
+        private bool CanClickBorderCommandExecute(object p) => true;
+
+        private void OnClickBorderCommandExecuted(object p)
         {
-            var button = (Button)p;
-            if(button.Content == null)
+            var border = (Border)p;
+            if (border.Child == null)
             {
-                var cords = button.Uid.Split('-');
+                var cords = border.Uid.Split('-');
                 int idx = int.Parse(cords[0]);
                 int jdx = int.Parse(cords[1]);
-                Buttons[idx, jdx].Visibility = Visibility.Collapsed;
+                _cells[idx, jdx].Visibility = Visibility.Collapsed;
                 CountCloseCells--;
                 if (Sapper.Field[idx, jdx] == -1)
                 {
-                    Borders[idx, jdx].Background = new SolidColorBrush(Color.FromArgb(255, 209, 99, 99));
-                    for (int i = 0; i < Borders.GetLength(0); i++)
-                    {
-                        for (int j = 0; j < Borders.GetLength(1); j++)
-                        {
-                            if (Borders[i, j].Uid.Contains("mine"))
-                                Buttons[i, j].Visibility = Visibility.Collapsed;
-                        }
-                    }
-                    _grid.Children.Add(CreateBlockedGrid());
+                    _cells[idx, jdx].Background = new SolidColorBrush(Color.FromArgb(255, 209, 99, 99));
+                    ShowAllMines();
+                    //_grid.Children.Add(CreateBlockedGrid());
                 }
                 else if (Sapper.Field[idx, jdx] == 0)
                 {
                     OpeningRecursion(idx, jdx);
                 }
-                if(CountCloseCells == 0)
-                    _grid.Children.Add(CreateBlockedGrid());
+                //if (CountCloseCells == 0)
+                //    _grid.Children.Add(CreateBlockedGrid());
             }
         }
 
-        public ICommand CreateSapperFieldCommand { get; }
+        #endregion
 
-        private bool CanCreateSapperFieldCommandExecute(object p) => true;
+        //public ICommand CreateSapperFieldCommand { get; }
 
-        private void OnCreateSapperFieldCommandExecuted(object p)
-        {
-            if (_grid.ColumnDefinitions.Count == 0)
-            {
-                var difficult = (string)p;
-                if (difficult == "Beginner")
-                {
-                    HeightWindow = 600;
-                    WidthWindow = 600;
-                    MinHeightWindow = 600;
-                    MinWidthWindow = 600;
-                    Sapper = new SapperField(Difficulty.Beginner);
-                }
-                else if (difficult == "Amateur")
-                {
-                    HeightWindow = 700;
-                    WidthWindow = 800;
-                    MinHeightWindow = 700;
-                    MinWidthWindow = 800;
-                    Sapper = new SapperField(Difficulty.Amateur);
-                }
-                else
-                {
-                    HeightWindow = 750;
-                    WidthWindow = 1100;
-                    MinHeightWindow = 750;
-                    MinWidthWindow = 1100;
-                    Sapper = new SapperField(Difficulty.Professional);
-                }
-                CreateGridSapper();
-                FillingGridSapper();
-            }
-            else
-                MessageBox.Show("Игра уже запущена!");
+        //private bool CanCreateSapperFieldCommandExecute(object p) => true;
+
+        //private void OnCreateSapperFieldCommandExecuted(object p)
+        //{
+        //    if (_grid.ColumnDefinitions.Count == 0)
+        //    {
+        //        var difficult = (string)p;
+        //        if (difficult == "Beginner")
+        //        {
+        //            HeightWindow = 600;
+        //            WidthWindow = 600;
+        //            MinHeightWindow = 600;
+        //            MinWidthWindow = 600;
+        //            Sapper = new SapperField(Difficulty.Beginner);
+        //        }
+        //        else if (difficult == "Amateur")
+        //        {
+        //            HeightWindow = 700;
+        //            WidthWindow = 800;
+        //            MinHeightWindow = 700;
+        //            MinWidthWindow = 800;
+        //            Sapper = new SapperField(Difficulty.Amateur);
+        //        }
+        //        else
+        //        {
+        //            HeightWindow = 750;
+        //            WidthWindow = 1100;
+        //            MinHeightWindow = 750;
+        //            MinWidthWindow = 1100;
+        //            Sapper = new SapperField(Difficulty.Professional);
+        //        }
+        //        CreateGridSapper();
+        //        FillingGridSapper();
+        //    }
+        //    else
+        //        MessageBox.Show("Игра уже запущена!");
             
-        }
+        //}
 
         #endregion
 
         #region Methods
 
-        private Grid CreateBlockedGrid()
+        private void ShowAllMines()
         {
-            Grid blockGrid = new Grid();
-            blockGrid.RowDefinitions.Add(new RowDefinition());
-            blockGrid.RowDefinitions.Add(new RowDefinition());
-            blockGrid.ColumnDefinitions.Add(new ColumnDefinition());
-            blockGrid.ColumnDefinitions.Add(new ColumnDefinition());
-            blockGrid.Background = new SolidColorBrush(Color.FromArgb(125, 108, 99, 99));
-            Grid.SetColumnSpan(blockGrid, 50);
-            Grid.SetRowSpan(blockGrid, 50);
-            TextBlock text = new TextBlock();
-            text.Text = "You've lost!";
-            text.HorizontalAlignment = HorizontalAlignment.Center;
-            text.VerticalAlignment = VerticalAlignment.Bottom;
-            text.FontSize = 40;
-            text.FontWeight = FontWeights.Bold;
-            Grid.SetRow(text, 0);
-            Grid.SetColumnSpan(text, 2);
-            Button button = new Button();
-            button.Content = "Replay";
-            button.Command = ReplayGameCommand;
-            button.Width = 110;
-            button.Height = 36;
-            button.Margin = new Thickness(5);
-            button.Background = new SolidColorBrush(Color.FromArgb(255, 90, 170, 180));
-            button.BorderThickness = new Thickness(3);
-            button.BorderBrush = new SolidColorBrush(Color.FromArgb(255, 139, 25, 224));
-            button.FontFamily = new FontFamily("Book Antiqua");
-            button.FontSize = 20;
-            button.VerticalAlignment = VerticalAlignment.Top;
-            button.HorizontalAlignment = HorizontalAlignment.Right;
-            Grid.SetRow(button, 1);
-            Grid.SetColumn(button, 0);  
-            if(CountCloseCells == 0)
+            for (int i = 0; i < Sapper.Field.GetLength(0); i++)
             {
-                button.Content = "New Game";
-                text.Text = "You won!";
+                for (int j = 0; j < Sapper.Field.GetLength(1); j++)
+                {
+                    if (_cells[i, j].Uid.Contains("mine"))
+                        _cells[i, j].Visibility = Visibility.Collapsed;
+                }
             }
-            blockGrid.Children.Add(text);
-            blockGrid.Children.Add(button);
-            button = new Button();
-            button.Content = "Exit";
-            button.Command = CloseAppCommand;
-            button.Width = 110;
-            button.Height = 36;
-            button.Margin = new Thickness(5);
-            button.Background = new SolidColorBrush(Color.FromArgb(255, 90, 170, 180));
-            button.BorderThickness = new Thickness(3);
-            button.BorderBrush = new SolidColorBrush(Color.FromArgb(255, 139, 25, 224));
-            button.FontFamily = new FontFamily("Book Antiqua");
-            button.FontSize = 20;
-            button.VerticalAlignment = VerticalAlignment.Top;
-            button.HorizontalAlignment = HorizontalAlignment.Left;
-            Grid.SetRow(button, 1);
-            Grid.SetColumn(button, 1);
-            blockGrid.Children.Add(button);
-            return blockGrid;
         }
+
+        private void GenerateCells()
+        {
+            var cells = new CellVM[9, 9];
+            var image = new BitmapImage(new Uri("Data/Images/mine.png", UriKind.Relative));
+            for (int i = 0; i < 9; i++)
+            {
+                for (int j = 0; j < 9; j++)
+                {
+                    cells[i, j] = new CellVM(Sapper.Field[i, j], Visibility.Visible, $"{i}-{j}", null, new SolidColorBrush(Color.FromArgb(255, 198, 198, 198)), OnSetFlagCommandExecuted, CanSetFlagCommandExecute, OnClickBorderCommandExecuted, CanClickBorderCommandExecute, OnClickLabelCommandExecuted, CanClickLabelCommandExecute);
+                    if (Sapper.Field[i, j] == -1)
+                    {
+                        Image img = new Image() { Source = image };
+                        cells[i, j].Value = img;
+                        cells[i, j].Uid = $"{i}-{j}-mine";
+                    }
+                    else if (Sapper.Field[i, j] == 0)
+                    {
+                        cells[i, j].Value = null;
+                    }
+                    else if (Sapper.Field[i, j] == 1)
+                    {
+                        cells[i, j].Foreground = new SolidColorBrush(Color.FromArgb(255, 24, 29, 237));
+                    }
+                    else if (Sapper.Field[i, j] == 2)
+                    {
+                        cells[i, j].Foreground = new SolidColorBrush(Color.FromArgb(255, 62, 151, 30));
+                    }
+                    else if (Sapper.Field[i, j] == 3)
+                    {
+                        cells[i, j].Foreground = new SolidColorBrush(Color.FromArgb(255, 215, 22, 50));
+                    }
+                    else if (Sapper.Field[i, j] == 4)
+                    {
+                        cells[i, j].Foreground = new SolidColorBrush(Color.FromArgb(255, 22, 41, 164));
+                    }
+                    else if (Sapper.Field[i, j] == 5)
+                    {
+                        cells[i, j].Foreground = new SolidColorBrush(Color.FromArgb(255, 138, 12, 12));
+                    }
+                    else
+                    {
+                        cells[i, j].Foreground = new SolidColorBrush(Color.FromArgb(255, 250, 10, 10));
+                    }
+                }
+            }
+            this._cells = cells;
+            
+        }
+
+        //private Grid CreateBlockedGrid()
+        //{
+        //    Grid blockGrid = new Grid();
+        //    blockGrid.RowDefinitions.Add(new RowDefinition());
+        //    blockGrid.RowDefinitions.Add(new RowDefinition());
+        //    blockGrid.ColumnDefinitions.Add(new ColumnDefinition());
+        //    blockGrid.ColumnDefinitions.Add(new ColumnDefinition());
+        //    blockGrid.Background = new SolidColorBrush(Color.FromArgb(125, 108, 99, 99));
+        //    Grid.SetColumnSpan(blockGrid, 50);
+        //    Grid.SetRowSpan(blockGrid, 50);
+        //    TextBlock text = new TextBlock();
+        //    text.Text = "You've lost!";
+        //    text.HorizontalAlignment = HorizontalAlignment.Center;
+        //    text.VerticalAlignment = VerticalAlignment.Bottom;
+        //    text.FontSize = 40;
+        //    text.FontWeight = FontWeights.Bold;
+        //    Grid.SetRow(text, 0);
+        //    Grid.SetColumnSpan(text, 2);
+        //    Button button = new Button();
+        //    button.Content = "Replay";
+        //    button.Command = ReplayGameCommand;
+        //    button.Width = 110;
+        //    button.Height = 36;
+        //    button.Margin = new Thickness(5);
+        //    button.Background = new SolidColorBrush(Color.FromArgb(255, 90, 170, 180));
+        //    button.BorderThickness = new Thickness(3);
+        //    button.BorderBrush = new SolidColorBrush(Color.FromArgb(255, 139, 25, 224));
+        //    button.FontFamily = new FontFamily("Book Antiqua");
+        //    button.FontSize = 20;
+        //    button.VerticalAlignment = VerticalAlignment.Top;
+        //    button.HorizontalAlignment = HorizontalAlignment.Right;
+        //    Grid.SetRow(button, 1);
+        //    Grid.SetColumn(button, 0);  
+        //    if(CountCloseCells == 0)
+        //    {
+        //        button.Content = "New Game";
+        //        text.Text = "You won!";
+        //    }
+        //    blockGrid.Children.Add(text);
+        //    blockGrid.Children.Add(button);
+        //    button = new Button();
+        //    button.Content = "Exit";
+        //    button.Command = CloseAppCommand;
+        //    button.Width = 110;
+        //    button.Height = 36;
+        //    button.Margin = new Thickness(5);
+        //    button.Background = new SolidColorBrush(Color.FromArgb(255, 90, 170, 180));
+        //    button.BorderThickness = new Thickness(3);
+        //    button.BorderBrush = new SolidColorBrush(Color.FromArgb(255, 139, 25, 224));
+        //    button.FontFamily = new FontFamily("Book Antiqua");
+        //    button.FontSize = 20;
+        //    button.VerticalAlignment = VerticalAlignment.Top;
+        //    button.HorizontalAlignment = HorizontalAlignment.Left;
+        //    Grid.SetRow(button, 1);
+        //    Grid.SetColumn(button, 1);
+        //    blockGrid.Children.Add(button);
+        //    return blockGrid;
+        //}
 
         private void OpeningRecursion(int idx, int jdx)
         {
@@ -317,17 +377,17 @@ namespace Sapper.ViewModels
                 {
                     try
                     {
-                        if (Buttons[i, j].Visibility == Visibility.Collapsed)
+                        if (_cells[i, j].Visibility == Visibility.Collapsed)
                             continue;
                         if (Sapper.Field[i, j] == 0)
                         {
-                            Buttons[i, j].Visibility = Visibility.Collapsed;
+                            _cells[i, j].Visibility = Visibility.Collapsed;
                             CountCloseCells--;
                             OpeningRecursion(i, j);
                         }
                         else
                         {
-                            Buttons[i, j].Visibility = Visibility.Collapsed;
+                            _cells[i, j].Visibility = Visibility.Collapsed;
                             CountCloseCells--;
                             continue;
                         }
@@ -337,168 +397,15 @@ namespace Sapper.ViewModels
             }
         }
 
-        private void FillingGridSapper()
-        {
-            var image = new BitmapImage(new Uri("Data/Images/mine.png", UriKind.Relative));
-            if (Sapper.Difficulty == Difficulty.Beginner)
-            {
-                CountCloseCells = 81 - (byte)Difficulty.Beginner;
-                for (int i = 0; i < 9; i++)
-                {
-                    for (int j = 0; j < 9; j++)
-                    {
-                        CreateLabel(image, i, j);
-                        CreateButton(i, j);
-                    }
-                }
-            }
-            else if (Sapper.Difficulty == Difficulty.Amateur)
-            {
-                CountCloseCells = 256 - (byte)Difficulty.Amateur;
-                for (int i = 0; i < 16; i++)
-                {
-                    for (int j = 0; j < 16; j++)
-                    {
-                        CreateLabel(image, i, j);
-                        CreateButton(i, j);
-                    }
-                }
-            }
-            else
-            {
-                CountCloseCells = 480 - (byte)Difficulty.Professional;
-                for (int i = 0; i < 16; i++)
-                {
-                    for (int j = 0; j < 30; j++)
-                    {
-                        CreateLabel(image, i, j);
-                        CreateButton(i, j);
-                    }
-                }
-            }
-        }
-
-        private void CreateButton(int i, int j)
-        {
-            Button button = new Button();
-            button.Uid = $"{i}-{j}";
-            button.DataContext = this;
-            button.Command = ClickButtonCommand;
-            button.CommandParameter = button;
-            button.Background = new SolidColorBrush(Color.FromArgb(255, 184, 184, 190));
-            button.BorderBrush = new SolidColorBrush(Color.FromArgb(255, 68, 64, 71));
-            button.InputBindings.Add(new MouseBinding() { Command = SetFlagCommand, MouseAction = MouseAction.RightClick, CommandParameter = button });
-            Grid.SetRow(button, i);
-            Grid.SetColumn(button, j);
-            Buttons[i, j] = button;
-            _grid.Children.Add(button);
-        }
-
-        private void CreateLabel(BitmapImage image, int i, int j)
-        {
-            Label label = new Label();
-            Border border = new Border();
-            label.Content = Sapper.Field[i, j];
-            label.Uid = $"{i}-{j}";
-            label.FontWeight = FontWeights.Bold;
-            label.Foreground = new SolidColorBrush(Color.FromArgb(255, 24, 29, 237));
-            if (Sapper.Field[i, j] == -1)
-            {
-                Image img = new Image();
-                img.Source = image;
-                label.Content = img;
-                border.Uid = $"{i}-{j}-mine";
-            }
-            else if (Sapper.Field[i, j] == 0)
-            {
-                label.Content = null;
-            }
-            else if (Sapper.Field[i, j] == 1)
-            {
-                label.Foreground = new SolidColorBrush(Color.FromArgb(255, 24, 29, 237));
-            }
-            else if (Sapper.Field[i, j] == 2)
-            {
-                label.Foreground = new SolidColorBrush(Color.FromArgb(255, 62, 151, 30));
-            }
-            else if (Sapper.Field[i, j] == 3)
-            {
-                label.Foreground = new SolidColorBrush(Color.FromArgb(255, 215, 22, 50));
-            }
-            else if (Sapper.Field[i, j] == 4)
-            {
-                label.Foreground = new SolidColorBrush(Color.FromArgb(255, 22, 41, 164));
-            }
-            else if (Sapper.Field[i, j] == 5)
-            {
-                label.Foreground = new SolidColorBrush(Color.FromArgb(255, 138, 12, 12));
-            }
-            else
-            {
-                label.Foreground = new SolidColorBrush(Color.FromArgb(255, 250, 10, 10));
-            }
-            Viewbox viewbox = new Viewbox();
-            viewbox.Child = label;
-            border.BorderBrush = new SolidColorBrush(Color.FromArgb(255, 68, 64, 71));
-            border.BorderThickness = new Thickness(0.5);
-            border.Background = new SolidColorBrush(Color.FromArgb(255, 197, 197, 204));
-            border.InputBindings.Add(new MouseBinding() { Command = ClickLabelCommand, MouseAction = MouseAction.LeftClick, CommandParameter = label });
-            border.Child = viewbox;
-            Grid.SetRow(border, i);
-            Grid.SetColumn(border, j);
-            Borders[i, j] = border;
-            _grid.Children.Add(border);
-        }
-
-        private void CreateGridSapper()
-        {
-            if (Sapper.Difficulty == Difficulty.Beginner)
-            {
-                Buttons = new Button[9, 9];
-                Borders = new Border[9, 9];
-                for (int i = 0; i < 9; i++)
-                {
-                    _grid.RowDefinitions.Add(new RowDefinition());
-                    _grid.ColumnDefinitions.Add(new ColumnDefinition());
-                }
-            }
-            else if (Sapper.Difficulty == Difficulty.Amateur)
-            {
-                Buttons = new Button[16, 16];
-                Borders = new Border[16, 16];
-                for (int i = 0; i < 16; i++)
-                {
-                    _grid.RowDefinitions.Add(new RowDefinition());
-                    _grid.ColumnDefinitions.Add(new ColumnDefinition());
-                }
-            }
-            else
-            {
-                Buttons = new Button[16, 30];
-                Borders = new Border[16, 30];
-                for (int i = 0; i < 16; i++)
-                {
-                    _grid.RowDefinitions.Add(new RowDefinition());
-                }
-                for (int i = 0; i < 30; i++)
-                {
-                    _grid.ColumnDefinitions.Add(new ColumnDefinition());
-                }
-            }
-        }
-
         #endregion
 
         public MainWindowViewModel()
         {
+            GenerateCells();
+
             #region Commands
 
-            CreateSapperFieldCommand = new LambdaCommand(OnCreateSapperFieldCommandExecuted,CanCreateSapperFieldCommandExecute);
-            ClickButtonCommand = new LambdaCommand(OnClickButtonCommandExecuted, CanClickButtonCommandExecute);
-            SetFlagCommand = new LambdaCommand(OnSetFlagCommandExecuted, CanSetFlagCommandExecute);
             CloseAppCommand = new LambdaCommand(OnCloseAppCommandExecuted, CanCloseAppCommandExecute);
-            ReplayGameCommand = new LambdaCommand(OnReplayGameCommandExecuted, CanReplayGameCommandExecute);
-            ClickLabelCommand = new LambdaCommand(OnClickLabelCommandExecuted, CanClickLabelCommandExecute);
 
             #endregion
         }
