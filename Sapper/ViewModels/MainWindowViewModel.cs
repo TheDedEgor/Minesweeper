@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using Sapper.ViewModels.Base;
 using System.Windows.Input;
 using Sapper.Infrastructure.Commands;
@@ -6,9 +7,11 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using Sapper.Models;
 using System.Windows.Media.Imaging;
-using System;
+using Sapper.Infrastructure.Extensions;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Controls.Primitives;
+using System.Collections.ObjectModel;
 
 namespace Sapper.ViewModels
 {
@@ -18,15 +21,33 @@ namespace Sapper.ViewModels
 
         private SapperField Sapper = new(Difficulty.Beginner);
 
-        private int CountCloseCells;
+        private bool GameIsOver = false;
 
         #endregion
 
         #region Properties
 
+        private BitmapImage _sourceImage = new BitmapImage(new Uri("Data/Images/sm.png", UriKind.Relative));
+
+        public BitmapImage SourceImage
+        {
+            get => _sourceImage;
+            set => Set(ref _sourceImage, value);
+        }
+
+        #region AllCells
+
         private CellVM[,] _cells;
 
-        public IEnumerable<CellVM> AllCells => _cells.Cast<CellVM>();
+        private ObservableCollection<CellVM> _allCells;
+
+        public ObservableCollection<CellVM> AllCells
+        {
+            get => _allCells;
+            set => Set(ref _allCells, value);
+        }
+
+        #endregion
 
         private double _minHeightWindow = 600;
 
@@ -64,17 +85,20 @@ namespace Sapper.ViewModels
 
         #region Commands
 
-        //public ICommand ReplayGameCommand { get; }
+        public ICommand ReplayGameCommand { get; }
 
-        //private bool CanReplayGameCommandExecute(object p) => true;
+        private bool CanReplayGameCommandExecute(object p) => true;
 
-        //private void OnReplayGameCommandExecuted(object p)
-        //{
-        //    _grid.Children.Clear();
-        //    _grid.RowDefinitions.Clear();
-        //    _grid.ColumnDefinitions.Clear();
-        //}
+        private void OnReplayGameCommandExecuted(object p)
+        {
+            AllCells.Clear();
+            Sapper = new(Difficulty.Beginner);
+            GameIsOver = false;
+            GenerateCells();
+            SourceImage = new BitmapImage(new Uri("Data/Images/sm.png", UriKind.Relative));
+        }
 
+        #region CloseAppCommand
         public ICommand CloseAppCommand { get; }
 
         private bool CanCloseAppCommandExecute(object p) => true;
@@ -84,9 +108,11 @@ namespace Sapper.ViewModels
             Application.Current.Shutdown();
         }
 
+        #endregion
+
         #region ClickLabelCommand
 
-        private bool CanClickLabelCommandExecute(object p) => true;
+        private bool CanClickLabelCommandExecute(object p) => !GameIsOver;
 
         private void OnClickLabelCommandExecuted(object p)
         {
@@ -124,18 +150,17 @@ namespace Sapper.ViewModels
                                     _cells[i, j].Visibility = Visibility.Collapsed;
                                     _cells[i, j].Background = new SolidColorBrush(Color.FromArgb(255, 209, 99, 99));
                                     ShowAllMines();
-                                    //_grid.Children.Add(CreateBlockedGrid());
+                                    SourceImage = new BitmapImage(new Uri("Data/Images/dead.png", UriKind.Relative));
+                                    GameIsOver = true;
                                 }
                                 else if (Sapper.Field[i, j] == 0)
                                 {
                                     _cells[i, j].Visibility = Visibility.Collapsed;
-                                    CountCloseCells--;
-                                    OpeningRecursion(i, j);
+                                    OpeningCellsRecursion(i, j);
                                 }
                                 else
                                 {
                                     _cells[i, j].Visibility = Visibility.Collapsed;
-                                    CountCloseCells--;
                                     continue;
                                 }
                             }
@@ -150,7 +175,7 @@ namespace Sapper.ViewModels
 
         #region SetFlagCommand
 
-        private bool CanSetFlagCommandExecute(object p) => true;
+        private bool CanSetFlagCommandExecute(object p) => !GameIsOver;
 
         private void OnSetFlagCommandExecuted(object p)
         {
@@ -175,7 +200,7 @@ namespace Sapper.ViewModels
 
         #region ClickBorderCommand
 
-        private bool CanClickBorderCommandExecute(object p) => true;
+        private bool CanClickBorderCommandExecute(object p) => !GameIsOver;
 
         private void OnClickBorderCommandExecuted(object p)
         {
@@ -186,19 +211,17 @@ namespace Sapper.ViewModels
                 int idx = int.Parse(cords[0]);
                 int jdx = int.Parse(cords[1]);
                 _cells[idx, jdx].Visibility = Visibility.Collapsed;
-                CountCloseCells--;
                 if (Sapper.Field[idx, jdx] == -1)
                 {
                     _cells[idx, jdx].Background = new SolidColorBrush(Color.FromArgb(255, 209, 99, 99));
                     ShowAllMines();
-                    //_grid.Children.Add(CreateBlockedGrid());
+                    SourceImage = new BitmapImage(new Uri("Data/Images/dead.png", UriKind.Relative));
+                    GameIsOver = true;
                 }
                 else if (Sapper.Field[idx, jdx] == 0)
                 {
-                    OpeningRecursion(idx, jdx);
+                    OpeningCellsRecursion(idx, jdx);
                 }
-                //if (CountCloseCells == 0)
-                //    _grid.Children.Add(CreateBlockedGrid());
             }
         }
 
@@ -307,69 +330,10 @@ namespace Sapper.ViewModels
                 }
             }
             this._cells = cells;
-            
+            AllCells = _cells.Cast<CellVM>().ToObservable();
         }
 
-        //private Grid CreateBlockedGrid()
-        //{
-        //    Grid blockGrid = new Grid();
-        //    blockGrid.RowDefinitions.Add(new RowDefinition());
-        //    blockGrid.RowDefinitions.Add(new RowDefinition());
-        //    blockGrid.ColumnDefinitions.Add(new ColumnDefinition());
-        //    blockGrid.ColumnDefinitions.Add(new ColumnDefinition());
-        //    blockGrid.Background = new SolidColorBrush(Color.FromArgb(125, 108, 99, 99));
-        //    Grid.SetColumnSpan(blockGrid, 50);
-        //    Grid.SetRowSpan(blockGrid, 50);
-        //    TextBlock text = new TextBlock();
-        //    text.Text = "You've lost!";
-        //    text.HorizontalAlignment = HorizontalAlignment.Center;
-        //    text.VerticalAlignment = VerticalAlignment.Bottom;
-        //    text.FontSize = 40;
-        //    text.FontWeight = FontWeights.Bold;
-        //    Grid.SetRow(text, 0);
-        //    Grid.SetColumnSpan(text, 2);
-        //    Button button = new Button();
-        //    button.Content = "Replay";
-        //    button.Command = ReplayGameCommand;
-        //    button.Width = 110;
-        //    button.Height = 36;
-        //    button.Margin = new Thickness(5);
-        //    button.Background = new SolidColorBrush(Color.FromArgb(255, 90, 170, 180));
-        //    button.BorderThickness = new Thickness(3);
-        //    button.BorderBrush = new SolidColorBrush(Color.FromArgb(255, 139, 25, 224));
-        //    button.FontFamily = new FontFamily("Book Antiqua");
-        //    button.FontSize = 20;
-        //    button.VerticalAlignment = VerticalAlignment.Top;
-        //    button.HorizontalAlignment = HorizontalAlignment.Right;
-        //    Grid.SetRow(button, 1);
-        //    Grid.SetColumn(button, 0);  
-        //    if(CountCloseCells == 0)
-        //    {
-        //        button.Content = "New Game";
-        //        text.Text = "You won!";
-        //    }
-        //    blockGrid.Children.Add(text);
-        //    blockGrid.Children.Add(button);
-        //    button = new Button();
-        //    button.Content = "Exit";
-        //    button.Command = CloseAppCommand;
-        //    button.Width = 110;
-        //    button.Height = 36;
-        //    button.Margin = new Thickness(5);
-        //    button.Background = new SolidColorBrush(Color.FromArgb(255, 90, 170, 180));
-        //    button.BorderThickness = new Thickness(3);
-        //    button.BorderBrush = new SolidColorBrush(Color.FromArgb(255, 139, 25, 224));
-        //    button.FontFamily = new FontFamily("Book Antiqua");
-        //    button.FontSize = 20;
-        //    button.VerticalAlignment = VerticalAlignment.Top;
-        //    button.HorizontalAlignment = HorizontalAlignment.Left;
-        //    Grid.SetRow(button, 1);
-        //    Grid.SetColumn(button, 1);
-        //    blockGrid.Children.Add(button);
-        //    return blockGrid;
-        //}
-
-        private void OpeningRecursion(int idx, int jdx)
+        private void OpeningCellsRecursion(int idx, int jdx)
         {
             for (int i = idx - 1; i < idx + 2; i++)
             {
@@ -382,13 +346,11 @@ namespace Sapper.ViewModels
                         if (Sapper.Field[i, j] == 0)
                         {
                             _cells[i, j].Visibility = Visibility.Collapsed;
-                            CountCloseCells--;
-                            OpeningRecursion(i, j);
+                            OpeningCellsRecursion(i, j);
                         }
                         else
                         {
                             _cells[i, j].Visibility = Visibility.Collapsed;
-                            CountCloseCells--;
                             continue;
                         }
                     }
@@ -406,6 +368,7 @@ namespace Sapper.ViewModels
             #region Commands
 
             CloseAppCommand = new LambdaCommand(OnCloseAppCommandExecuted, CanCloseAppCommandExecute);
+            ReplayGameCommand = new LambdaCommand(OnReplayGameCommandExecuted, CanReplayGameCommandExecute);
 
             #endregion
         }

@@ -9,7 +9,7 @@
         Title="Sapper" 
         Height="600"
         Width="600"
-        Icon="Data/Images/mine.ico" FontWeight="Normal" HorizontalAlignment="Center" VerticalAlignment="Center">
+        Icon="Data/Images/mine.ico" FontWeight="Normal" HorizontalAlignment="Center" VerticalAlignment="Center" ResizeMode="CanMinimize">
     <Window.DataContext>
         <vm:MainWindowViewModel/>
     </Window.DataContext>
@@ -36,7 +36,26 @@
                                 <RowDefinition Height="221*"/>
                             </Grid.RowDefinitions>
                             <Border Grid.Row="0" BorderBrush="#FFC6C6C6" BorderThickness="0,0,0,10">
-                                <Button Content="Start" Command="{Binding CreateSapperFieldCommand}" CommandParameter="Beginner" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                <Border Background="Silver" BorderThickness="5,5,5,5">
+                                    <Border.BorderBrush>
+                                        <LinearGradientBrush MappingMode="RelativeToBoundingBox" StartPoint="0.485,0" EndPoint="0.5,1">
+                                            <GradientStop Color="Gray" Offset="0.5"/>
+                                            <GradientStop Color="White" Offset="0.5"/>
+                                        </LinearGradientBrush>
+                                    </Border.BorderBrush>
+                                    <Border Background="#FFC6C6C6" HorizontalAlignment="Center" VerticalAlignment="Center" Width="60" Height="50" BorderThickness="4,4,4,4">
+                                        <Border.BorderBrush>
+                                            <LinearGradientBrush EndPoint="0.8,1" StartPoint="0.2,0">
+                                                <GradientStop Color="White" Offset="0.5"/>
+                                                <GradientStop Color="Gray" Offset="0.5"/>
+                                            </LinearGradientBrush>
+                                        </Border.BorderBrush>
+                                        <Border.InputBindings>
+                                            <MouseBinding MouseAction="LeftClick" Command="{Binding ReplayGameCommand}" CommandParameter="{Binding ElementName=itemsControl}"/>
+                                        </Border.InputBindings>
+                                        <Image Source="{Binding SourceImage}"/>
+                                    </Border>
+                                </Border>
                             </Border>
                             <Border BorderThickness="5,5,5,5" Grid.Row="2">
                                 <Border.BorderBrush>
@@ -45,7 +64,7 @@
                                         <GradientStop Color="White" Offset="0.5"/>
                                     </LinearGradientBrush>
                                 </Border.BorderBrush>
-                                <ItemsControl ItemsSource="{Binding AllCells}">
+                                <ItemsControl x:Name="itemsControl" ItemsSource="{Binding AllCells}">
                                     <ItemsControl.ItemsPanel>
                                         <ItemsPanelTemplate>
                                             <UniformGrid Rows="9" Columns="9" />
@@ -62,7 +81,7 @@
                                                 <Border x:Name="border" Visibility="{Binding Visibility}" Uid="{Binding Uid}" Background="#FFC6C6C6" BorderThickness="4,4,4,4" >
                                                     <Border.InputBindings>
                                                         <MouseBinding MouseAction="RightClick" Command="{Binding SetFlagCommand }" CommandParameter="{Binding ElementName=border}"/>
-                                                        <MouseBinding MouseAction="LeftClick" Command="{Binding ClickButtonCommand }" CommandParameter="{Binding ElementName=border}"/>
+                                                        <MouseBinding MouseAction="LeftClick" Command="{Binding ClickBorderCommand }" CommandParameter="{Binding ElementName=border}"/>
                                                     </Border.InputBindings>
                                                     <Border.BorderBrush>
                                                         <LinearGradientBrush EndPoint="0.8,1" StartPoint="0.23,0">

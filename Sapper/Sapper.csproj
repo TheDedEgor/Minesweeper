@@ -8,25 +8,28 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Data\Images\dead.png" />
     <None Remove="Data\Images\flag.png" />
-    <None Remove="Data\Images\main.jpg" />
     <None Remove="Data\Images\mine.ico" />
+    <None Remove="Data\Images\sm.png" />
+    <None Remove="Data\Images\smile.jpg" />
+    <None Remove="Data\Images\smile.png" />
     <None Remove="Data\mine.ico" />
     <None Remove="Data\mine.png" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Services\" />
-    <Folder Include="Views\Windows\" />
     <Folder Include="Services\" />
     <Folder Include="Views\Windows\" />
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Data\Images\dead.png" />
     <Resource Include="Data\Images\flag.png" />
-    <Resource Include="Data\Images\main.jpg" />
     <Resource Include="Data\Images\mine.ico" />
     <Resource Include="Data\Images\mine.png" />
+    <Resource Include="Data\Images\sm.png" />
   </ItemGroup>
 
 </Project>

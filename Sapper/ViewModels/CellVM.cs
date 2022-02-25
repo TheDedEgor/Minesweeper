@@ -23,7 +23,7 @@ namespace Sapper.ViewModels
             this.Foreground = Foreground;
             this.Background = Background;
             this.SetFlagCommand = new LambdaCommand(onSetFlag, canSetFlag);
-            this.ClickButtonCommand = new LambdaCommand(onClickBorder, canClickBorder);
+            this.ClickBorderCommand = new LambdaCommand(onClickBorder, canClickBorder);
             this.ClickLabelCommand = new LambdaCommand(onClickLabel, canClickLabel);
             this.IsFlag = false;
         }
@@ -70,7 +70,7 @@ namespace Sapper.ViewModels
 
         public ICommand SetFlagCommand { get; }
 
-        public ICommand ClickButtonCommand { get; }
+        public ICommand ClickBorderCommand { get; }
 
         public ICommand ClickLabelCommand { get; }
     }
