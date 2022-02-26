@@ -43,18 +43,30 @@
                                             <GradientStop Color="White" Offset="0.5"/>
                                         </LinearGradientBrush>
                                     </Border.BorderBrush>
-                                    <Border Background="#FFC6C6C6" HorizontalAlignment="Center" VerticalAlignment="Center" Width="60" Height="50" BorderThickness="4,4,4,4">
-                                        <Border.BorderBrush>
-                                            <LinearGradientBrush EndPoint="0.8,1" StartPoint="0.2,0">
-                                                <GradientStop Color="White" Offset="0.5"/>
-                                                <GradientStop Color="Gray" Offset="0.5"/>
-                                            </LinearGradientBrush>
-                                        </Border.BorderBrush>
-                                        <Border.InputBindings>
-                                            <MouseBinding MouseAction="LeftClick" Command="{Binding ReplayGameCommand}" CommandParameter="{Binding ElementName=itemsControl}"/>
-                                        </Border.InputBindings>
-                                        <Image Source="{Binding SourceImage}"/>
-                                    </Border>
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition/>
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition/>
+                                            <ColumnDefinition/>
+                                            <ColumnDefinition/>
+                                        </Grid.ColumnDefinitions>
+                                        <Label Grid.Row="0" Grid.Column="0" Content="{Binding CounterMines}" FontSize="30" FontFamily="pack://application:,,,/Fonts/#MK-90" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#FF9D2F2F" BorderBrush="#FF704646" Background="#FF110F0F" Padding="9,5,7,5" VerticalContentAlignment="Center" BorderThickness="5,5,5,5" ClipToBounds="True" Margin="0,5,0,5" HorizontalContentAlignment="Center"/>
+                                        <Label Grid.Row="0" Grid.Column="2" Content="{Binding Timer}" FontSize="30" FontFamily="pack://application:,,,/Fonts/#MK-90" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#FF9D2F2F" BorderBrush="#FF704646" Background="#FF110F0F" Padding="9,5,7,5" VerticalContentAlignment="Center" BorderThickness="5,5,5,5" ClipToBounds="True" Margin="0,5,0,5" HorizontalContentAlignment="Center"/>
+                                        <Border Grid.Row="0" Grid.Column="1" Background="#FFC6C6C6" HorizontalAlignment="Center" VerticalAlignment="Center" Width="60" Height="50" BorderThickness="4,4,4,4">
+                                            <Border.BorderBrush>
+                                                <LinearGradientBrush EndPoint="0.8,1" StartPoint="0.2,0">
+                                                    <GradientStop Color="White" Offset="0.5"/>
+                                                    <GradientStop Color="Gray" Offset="0.5"/>
+                                                </LinearGradientBrush>
+                                            </Border.BorderBrush>
+                                            <Border.InputBindings>
+                                                <MouseBinding MouseAction="LeftClick" Command="{Binding PlayGameCommand}" CommandParameter="{Binding ElementName=itemsControl}"/>
+                                            </Border.InputBindings>
+                                            <Image Source="{Binding SourceImage}"/>
+                                        </Border>
+                                    </Grid>
                                 </Border>
                             </Border>
                             <Border BorderThickness="5,5,5,5" Grid.Row="2">

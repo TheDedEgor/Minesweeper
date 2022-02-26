@@ -8,10 +8,12 @@ using System.Windows.Media;
 using Sapper.Models;
 using System.Windows.Media.Imaging;
 using Sapper.Infrastructure.Extensions;
+using Sapper.Data;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Controls.Primitives;
 using System.Collections.ObjectModel;
+using System.Windows.Threading;
 
 namespace Sapper.ViewModels
 {
@@ -23,11 +25,37 @@ namespace Sapper.ViewModels
 
         private bool GameIsOver = false;
 
+        private bool GameTimerStarted = false;
+
+        private int Time = 0;
+
+        private int Mines = 10;
+
+        private int CountClosedCells = 81 - 10;
+
+        private DispatcherTimer GameTimer;
+
         #endregion
 
         #region Properties
 
-        private BitmapImage _sourceImage = new BitmapImage(new Uri("Data/Images/sm.png", UriKind.Relative));
+        private string _timer = "000";
+
+        public string Timer
+        {
+            get => _timer;
+            set => Set(ref _timer, value);
+        }
+
+        private string _counterMines = "010";
+
+        public string CounterMines
+        {
+            get => _counterMines;
+            set => Set(ref _counterMines, value);
+        }
+
+        private BitmapImage _sourceImage = new(new Uri("Data/Images/sm.png", UriKind.Relative));
 
         public BitmapImage SourceImage
         {
@@ -85,18 +113,30 @@ namespace Sapper.ViewModels
 
         #region Commands
 
-        public ICommand ReplayGameCommand { get; }
+        #region PlayGameCommand
 
-        private bool CanReplayGameCommandExecute(object p) => true;
+        public ICommand PlayGameCommand { get; }
 
-        private void OnReplayGameCommandExecuted(object p)
+        private bool CanPlayGameCommandExecute(object p) => true;
+
+        private void OnPlayGameCommandExecuted(object p)
         {
+            if(GameTimerStarted)
+                GameTimer.Stop();
             AllCells.Clear();
             Sapper = new(Difficulty.Beginner);
             GameIsOver = false;
+            GameTimerStarted = false;
+            Time = 0;
+            Mines = 10;
+            Timer = "000";
+            CounterMines = "010";
+            CountClosedCells = 81 - 10;
             GenerateCells();
             SourceImage = new BitmapImage(new Uri("Data/Images/sm.png", UriKind.Relative));
         }
+
+        #endregion
 
         #region CloseAppCommand
         public ICommand CloseAppCommand { get; }
@@ -150,17 +190,20 @@ namespace Sapper.ViewModels
                                     _cells[i, j].Visibility = Visibility.Collapsed;
                                     _cells[i, j].Background = new SolidColorBrush(Color.FromArgb(255, 209, 99, 99));
                                     ShowAllMines();
+                                    GameTimer.Stop();
                                     SourceImage = new BitmapImage(new Uri("Data/Images/dead.png", UriKind.Relative));
                                     GameIsOver = true;
                                 }
                                 else if (Sapper.Field[i, j] == 0)
                                 {
                                     _cells[i, j].Visibility = Visibility.Collapsed;
+                                    CountClosedCells--;
                                     OpeningCellsRecursion(i, j);
                                 }
                                 else
                                 {
                                     _cells[i, j].Visibility = Visibility.Collapsed;
+                                    CountClosedCells--;
                                     continue;
                                 }
                             }
@@ -169,6 +212,8 @@ namespace Sapper.ViewModels
                     }
                 }
             }
+            if(CountClosedCells == 0)
+                GameTimer.Stop();
         }
 
         #endregion
@@ -179,6 +224,11 @@ namespace Sapper.ViewModels
 
         private void OnSetFlagCommandExecuted(object p)
         {
+            if (!GameTimerStarted)
+            {
+                GameTimer.Start();
+                GameTimerStarted = true;
+            }
             var border = (Border)p;
             var cords = border.Uid.Split('-');
             int idx = int.Parse(cords[0]);
@@ -188,11 +238,13 @@ namespace Sapper.ViewModels
                 Image flagImage = new Image() { Source = new BitmapImage(new Uri("Data/Images/flag.png", UriKind.Relative)) };
                 border.Child = flagImage;
                 _cells[idx, jdx].IsFlag = true;
+                CountingMines(false);
             }
             else
             {
                 border.Child = null;
                 _cells[idx, jdx].IsFlag = false;
+                CountingMines(true);
             }
         }
 
@@ -204,6 +256,11 @@ namespace Sapper.ViewModels
 
         private void OnClickBorderCommandExecuted(object p)
         {
+            if(!GameTimerStarted)
+            {
+                GameTimer.Start();
+                GameTimerStarted = true;
+            }
             var border = (Border)p;
             if (border.Child == null)
             {
@@ -211,10 +268,12 @@ namespace Sapper.ViewModels
                 int idx = int.Parse(cords[0]);
                 int jdx = int.Parse(cords[1]);
                 _cells[idx, jdx].Visibility = Visibility.Collapsed;
+                CountClosedCells--;
                 if (Sapper.Field[idx, jdx] == -1)
                 {
                     _cells[idx, jdx].Background = new SolidColorBrush(Color.FromArgb(255, 209, 99, 99));
                     ShowAllMines();
+                    GameTimer.Stop();
                     SourceImage = new BitmapImage(new Uri("Data/Images/dead.png", UriKind.Relative));
                     GameIsOver = true;
                 }
@@ -222,55 +281,22 @@ namespace Sapper.ViewModels
                 {
                     OpeningCellsRecursion(idx, jdx);
                 }
+                if (CountClosedCells == 0)
+                    GameTimer.Stop();
             }
         }
 
         #endregion
 
-        //public ICommand CreateSapperFieldCommand { get; }
-
-        //private bool CanCreateSapperFieldCommandExecute(object p) => true;
-
-        //private void OnCreateSapperFieldCommandExecuted(object p)
-        //{
-        //    if (_grid.ColumnDefinitions.Count == 0)
-        //    {
-        //        var difficult = (string)p;
-        //        if (difficult == "Beginner")
-        //        {
-        //            HeightWindow = 600;
-        //            WidthWindow = 600;
-        //            MinHeightWindow = 600;
-        //            MinWidthWindow = 600;
-        //            Sapper = new SapperField(Difficulty.Beginner);
-        //        }
-        //        else if (difficult == "Amateur")
-        //        {
-        //            HeightWindow = 700;
-        //            WidthWindow = 800;
-        //            MinHeightWindow = 700;
-        //            MinWidthWindow = 800;
-        //            Sapper = new SapperField(Difficulty.Amateur);
-        //        }
-        //        else
-        //        {
-        //            HeightWindow = 750;
-        //            WidthWindow = 1100;
-        //            MinHeightWindow = 750;
-        //            MinWidthWindow = 1100;
-        //            Sapper = new SapperField(Difficulty.Professional);
-        //        }
-        //        CreateGridSapper();
-        //        FillingGridSapper();
-        //    }
-        //    else
-        //        MessageBox.Show("Игра уже запущена!");
-            
-        //}
-
         #endregion
 
         #region Methods
+
+        private void TimerTick(object sender, EventArgs e)
+        {
+            Time++;
+            Timer = Time.ToString("000");
+        }
 
         private void ShowAllMines()
         {
@@ -286,6 +312,9 @@ namespace Sapper.ViewModels
 
         private void GenerateCells()
         {
+            GameTimer = new();
+            GameTimer.Interval = new TimeSpan(0, 0, 1);
+            GameTimer.Tick += new EventHandler(TimerTick);
             var cells = new CellVM[9, 9];
             var image = new BitmapImage(new Uri("Data/Images/mine.png", UriKind.Relative));
             for (int i = 0; i < 9; i++)
@@ -346,16 +375,40 @@ namespace Sapper.ViewModels
                         if (Sapper.Field[i, j] == 0)
                         {
                             _cells[i, j].Visibility = Visibility.Collapsed;
+                            CountClosedCells--;
                             OpeningCellsRecursion(i, j);
                         }
                         else
                         {
                             _cells[i, j].Visibility = Visibility.Collapsed;
+                            CountClosedCells--;
                             continue;
                         }
                     }
                     catch { }
                 }
+            }
+        }
+
+        private void CountingMines(bool operation)
+        {
+            if (operation)
+                Mines++;
+            else
+                Mines--;
+            var line = Math.Abs(Mines).ToString();
+            if (Mines >= 0)
+            {
+                CounterMines = Mines.ToString("000");
+            }
+            else
+            {
+                if (line.Length == 1)
+                    CounterMines = "0-" + line;
+                else if (line.Length == 2)
+                    CounterMines = "-" + line;
+                else
+                    CounterMines = line;
             }
         }
 
@@ -368,7 +421,7 @@ namespace Sapper.ViewModels
             #region Commands
 
             CloseAppCommand = new LambdaCommand(OnCloseAppCommandExecuted, CanCloseAppCommandExecute);
-            ReplayGameCommand = new LambdaCommand(OnReplayGameCommandExecuted, CanReplayGameCommandExecute);
+            PlayGameCommand = new LambdaCommand(OnPlayGameCommandExecuted, CanPlayGameCommandExecute);
 
             #endregion
         }

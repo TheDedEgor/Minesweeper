@@ -11,11 +11,15 @@
     <None Remove="Data\Images\dead.png" />
     <None Remove="Data\Images\flag.png" />
     <None Remove="Data\Images\mine.ico" />
+    <None Remove="Data\Images\numbers.bmp" />
     <None Remove="Data\Images\sm.png" />
     <None Remove="Data\Images\smile.jpg" />
     <None Remove="Data\Images\smile.png" />
     <None Remove="Data\mine.ico" />
     <None Remove="Data\mine.png" />
+    <None Remove="Fonts\MK-90.ttf" />
+    <None Remove="Fonts\Numbers.ttf" />
+    <None Remove="Fonts\RodchenkoBTT.ttf" />
   </ItemGroup>
 
   <ItemGroup>
@@ -29,7 +33,10 @@
     <Resource Include="Data\Images\flag.png" />
     <Resource Include="Data\Images\mine.ico" />
     <Resource Include="Data\Images\mine.png" />
+    <Resource Include="Data\Images\numbers.bmp" />
     <Resource Include="Data\Images\sm.png" />
+    <Resource Include="Fonts\MK-90.ttf" />
+    <Resource Include="Fonts\RodchenkoBTT.ttf" />
   </ItemGroup>
 
 </Project>
