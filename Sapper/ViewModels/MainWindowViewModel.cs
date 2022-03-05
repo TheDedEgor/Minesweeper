@@ -13,7 +13,6 @@ using Sapper.Data;
 using System.Linq;
 using System.Collections.ObjectModel;
 using System.Windows.Threading;
-using System.Windows.Controls.Primitives;
 
 namespace Sapper.ViewModels
 {
@@ -39,6 +38,8 @@ namespace Sapper.ViewModels
 
         #region Properties
 
+        #region Timer
+
         private string _timer = "000";
 
         public string Timer
@@ -46,6 +47,10 @@ namespace Sapper.ViewModels
             get => _timer;
             set => Set(ref _timer, value);
         }
+
+        #endregion
+
+        #region CounterMines
 
         private string _counterMines = "010";
 
@@ -55,6 +60,10 @@ namespace Sapper.ViewModels
             set => Set(ref _counterMines, value);
         }
 
+        #endregion
+
+        #region MainSmile
+
         private BitmapImage _sourceImage = SharedUtils.SmileImage;
 
         public BitmapImage SourceImage
@@ -62,6 +71,8 @@ namespace Sapper.ViewModels
             get => _sourceImage;
             set => Set(ref _sourceImage, value);
         }
+
+        #endregion
 
         #region AllCells
 
@@ -77,6 +88,8 @@ namespace Sapper.ViewModels
 
         #endregion
 
+        #region HeightWindow
+
         private double _heightWindow = 600;
 
         public double HeightWindow
@@ -84,6 +97,10 @@ namespace Sapper.ViewModels
             get => _heightWindow;
             set => Set(ref _heightWindow, value);
         }
+
+        #endregion
+
+        #region WidthWindow
 
         private double _widthWindow = 600;
 
@@ -93,6 +110,10 @@ namespace Sapper.ViewModels
             set => Set(ref _widthWindow, value);
         }
 
+        #endregion
+
+        #region Rows
+
         private int _rows = 9;
 
         public int Rows
@@ -101,6 +122,10 @@ namespace Sapper.ViewModels
             set => Set(ref _rows, value);
         }
 
+        #endregion
+
+        #region Columns
+
         private int _columns = 9;
 
         public int Columns
@@ -108,6 +133,8 @@ namespace Sapper.ViewModels
             get => _columns;
             set => Set(ref _columns, value);
         }
+
+        #endregion
 
         #endregion
 
@@ -193,7 +220,7 @@ namespace Sapper.ViewModels
             CounterMines = "099";
             CountClosedCells = 381;
             HeightWindow = 750;
-            WidthWindow = 1290;
+            WidthWindow = 1300;
             GenerateCells();
             SourceImage = SharedUtils.SmileImage;
         }

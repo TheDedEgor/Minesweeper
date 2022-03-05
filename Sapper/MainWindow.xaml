@@ -18,8 +18,8 @@
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="29*"/>
-            <RowDefinition Height="555*"/>
+            <RowDefinition Height="3*"/>
+            <RowDefinition Height="70*"/>
         </Grid.RowDefinitions>
         <Menu Grid.Row="0" FontSize="16">
             <MenuItem Header="Game">
@@ -28,94 +28,82 @@
                 <MenuItem Header="Expert" Command="{Binding ChooseExpertCommand}"/>
             </MenuItem>
             <MenuItem Header="Statistics"/>
-            <MenuItem Header="Exit"/>
+            <MenuItem Header="Exit" Command="{Binding CloseAppCommand}"/>
         </Menu>
-        <Border Grid.Row="1" BorderThickness="5,5,5,5">
-            <Border.BorderBrush>
-                <LinearGradientBrush EndPoint="0.937,1" StartPoint="0.063,0">
-                    <GradientStop Color="White" Offset="0.5"/>
-                    <GradientStop Color="Gray" Offset="0.5"/>
-                </LinearGradientBrush>
-            </Border.BorderBrush>
-            <Border BorderBrush="#FFC6C6C6" BorderThickness="10,10,10,10">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="42*"/>
-                        <RowDefinition Height="221*"/>
-                    </Grid.RowDefinitions>
-                    <Border Grid.Row="0" BorderBrush="#FFC6C6C6" BorderThickness="0,0,0,10">
-                        <Border Background="Silver" BorderThickness="5,5,5,5">
-                            <Border.BorderBrush>
-                                <LinearGradientBrush MappingMode="RelativeToBoundingBox" StartPoint="0.485,0" EndPoint="0.5,1">
-                                    <GradientStop Color="Gray" Offset="0.5"/>
-                                    <GradientStop Color="White" Offset="0.5"/>
-                                </LinearGradientBrush>
-                            </Border.BorderBrush>
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition/>
-                                </Grid.RowDefinitions>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition/>
-                                    <ColumnDefinition/>
-                                    <ColumnDefinition/>
-                                </Grid.ColumnDefinitions>
-                                <Label Grid.Row="0" Grid.Column="0" Content="{Binding CounterMines}" FontSize="30" FontFamily="pack://application:,,,/Fonts/#MK-90" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#FF9D2F2F" BorderBrush="#FF704646" Background="#FF110F0F" Padding="9,5,7,5" VerticalContentAlignment="Center" BorderThickness="5,5,5,5" ClipToBounds="True" Margin="0,5,0,5" HorizontalContentAlignment="Center"/>
-                                <Label Grid.Row="0" Grid.Column="2" Content="{Binding Timer}" FontSize="30" FontFamily="pack://application:,,,/Fonts/#MK-90" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#FF9D2F2F" BorderBrush="#FF704646" Background="#FF110F0F" Padding="9,5,7,5" VerticalContentAlignment="Center" BorderThickness="5,5,5,5" ClipToBounds="True" Margin="0,5,0,5" HorizontalContentAlignment="Center"/>
-                                <Border Grid.Row="0" Grid.Column="1" Background="#FFC6C6C6" HorizontalAlignment="Center" VerticalAlignment="Center" Width="60" Height="50" BorderThickness="4,4,4,4">
-                                    <Border.BorderBrush>
-                                        <LinearGradientBrush EndPoint="0.8,1" StartPoint="0.2,0">
-                                            <GradientStop Color="White" Offset="0.5"/>
-                                            <GradientStop Color="Gray" Offset="0.5"/>
-                                        </LinearGradientBrush>
-                                    </Border.BorderBrush>
-                                    <Border.InputBindings>
-                                        <MouseBinding MouseAction="LeftClick" Command="{Binding PlayGameCommand}"/>
-                                    </Border.InputBindings>
-                                    <Image Source="{Binding SourceImage}"/>
-                                </Border>
-                            </Grid>
-                        </Border>
-                    </Border>
-                    <Border BorderThickness="5,5,5,5" Grid.Row="2">
-                        <Border.BorderBrush>
-                            <LinearGradientBrush MappingMode="RelativeToBoundingBox" StartPoint="0.22,0" EndPoint="0.78,1">
-                                <GradientStop Color="Gray" Offset="0.5"/>
-                                <GradientStop Color="White" Offset="0.5"/>
-                            </LinearGradientBrush>
-                        </Border.BorderBrush>
-                        <ItemsControl ItemsSource="{Binding AllCells}">
-                            <ItemsControl.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <UniformGrid Rows="{Binding Rows}" Columns="{Binding Columns}"/>
-                                </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
+        <Border Grid.Row="1" BorderThickness="0,0,5,5" BorderBrush="Gray">
+            <Border BorderThickness="5,5,0,0" BorderBrush="White">
+                <Border BorderBrush="#FFC6C6C6" BorderThickness="10,10,10,10">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="42*"/>
+                            <RowDefinition Height="221*"/>
+                        </Grid.RowDefinitions>
+                        <Border Grid.Row="0" BorderBrush="#FFC6C6C6" BorderThickness="0,0,0,10">
+                            <Border Background="Silver" BorderThickness="5,5,0,0" BorderBrush="Gray">
+                                <Border BorderThickness="0,0,5,5" BorderBrush="White">
                                     <Grid>
-                                        <Label x:Name="label" Content="{Binding Value}" Foreground="{Binding Foreground}" Uid="{Binding Uid}" FontWeight="Bold" FontSize="{Binding FontSize, Mode=OneTime}" Background="{Binding Background}" BorderBrush="Gray" BorderThickness="1,1,1,1" VerticalContentAlignment="Center" HorizontalContentAlignment="Center">
-                                            <Label.InputBindings>
-                                                <MouseBinding MouseAction="LeftClick" Command="{Binding ClickLabelCommand}" CommandParameter="{Binding ElementName=label}"/>
-                                            </Label.InputBindings>
-                                        </Label>
-                                        <Border x:Name="border" Visibility="{Binding Visibility}" Uid="{Binding Uid}" Background="#FFC6C6C6" BorderThickness="4,4,4,4" >
-                                            <Border.InputBindings>
-                                                <MouseBinding MouseAction="RightClick" Command="{Binding SetFlagCommand }" CommandParameter="{Binding ElementName=border}"/>
-                                                <MouseBinding MouseAction="LeftClick" Command="{Binding ClickBorderCommand }" CommandParameter="{Binding ElementName=border}"/>
-                                            </Border.InputBindings>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition/>
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition/>
+                                            <ColumnDefinition/>
+                                            <ColumnDefinition/>
+                                        </Grid.ColumnDefinitions>
+                                        <Label Grid.Row="0" Grid.Column="0" Content="{Binding CounterMines}" FontSize="30" FontFamily="pack://application:,,,/Fonts/#MK-90" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#FF9D2F2F" BorderBrush="#FF704646" Background="#FF110F0F" Padding="9,5,7,5" VerticalContentAlignment="Center" BorderThickness="5,5,5,5" ClipToBounds="True" Margin="0,5,0,5" HorizontalContentAlignment="Center"/>
+                                        <Label Grid.Row="0" Grid.Column="2" Content="{Binding Timer}" FontSize="30" FontFamily="pack://application:,,,/Fonts/#MK-90" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#FF9D2F2F" BorderBrush="#FF704646" Background="#FF110F0F" Padding="9,5,7,5" VerticalContentAlignment="Center" BorderThickness="5,5,5,5" ClipToBounds="True" Margin="0,5,0,5" HorizontalContentAlignment="Center"/>
+                                        <Border Grid.Row="0" Grid.Column="1" Background="#FFC6C6C6" HorizontalAlignment="Center" VerticalAlignment="Center" Width="60" Height="50" BorderThickness="4,4,4,4">
                                             <Border.BorderBrush>
-                                                <LinearGradientBrush EndPoint="0.8,1" StartPoint="0.23,0">
+                                                <LinearGradientBrush EndPoint="0.84,1" StartPoint="0.16,0">
                                                     <GradientStop Color="White" Offset="0.5"/>
                                                     <GradientStop Color="Gray" Offset="0.5"/>
                                                 </LinearGradientBrush>
                                             </Border.BorderBrush>
+                                            <Border.InputBindings>
+                                                <MouseBinding MouseAction="LeftClick" Command="{Binding PlayGameCommand}"/>
+                                            </Border.InputBindings>
+                                            <Image Source="{Binding SourceImage}"/>
                                         </Border>
                                     </Grid>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                    </Border>
-                </Grid>
+                                </Border>
+                            </Border>
+                        </Border>
+                        <Border BorderThickness="5,5,0,0" Grid.Row="2" BorderBrush="Gray">
+                            <Border BorderThickness="0,0,5,5" BorderBrush="White">
+                            <ItemsControl ItemsSource="{Binding AllCells}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <UniformGrid Rows="{Binding Rows}" Columns="{Binding Columns}"/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Label x:Name="label" Content="{Binding Value}" Foreground="{Binding Foreground}" Uid="{Binding Uid}" FontWeight="Bold" FontSize="{Binding FontSize, Mode=OneTime}" Background="{Binding Background}" BorderBrush="Gray" BorderThickness="1,1,1,1" VerticalContentAlignment="Center" HorizontalContentAlignment="Center">
+                                                <Label.InputBindings>
+                                                    <MouseBinding MouseAction="LeftClick" Command="{Binding ClickLabelCommand}" CommandParameter="{Binding ElementName=label}"/>
+                                                </Label.InputBindings>
+                                            </Label>
+                                            <Border x:Name="border" Visibility="{Binding Visibility}" Uid="{Binding Uid}" Background="#FFC6C6C6" BorderThickness="4,4,4,4" >
+                                                <Border.InputBindings>
+                                                    <MouseBinding MouseAction="RightClick" Command="{Binding SetFlagCommand }" CommandParameter="{Binding ElementName=border}"/>
+                                                    <MouseBinding MouseAction="LeftClick" Command="{Binding ClickBorderCommand }" CommandParameter="{Binding ElementName=border}"/>
+                                                </Border.InputBindings>
+                                                <Border.BorderBrush>
+                                                    <LinearGradientBrush EndPoint="0.8,1" StartPoint="0.23,0">
+                                                        <GradientStop Color="White" Offset="0.5"/>
+                                                        <GradientStop Color="Gray" Offset="0.5"/>
+                                                    </LinearGradientBrush>
+                                                </Border.BorderBrush>
+                                            </Border>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                            </Border>
+                        </Border>
+                    </Grid>
+                </Border>
             </Border>
         </Border>
     </Grid>

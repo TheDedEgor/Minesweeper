@@ -1,13 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using Sapper.Data;
-using Sapper.Infrastructure.Commands;
-using Sapper.ViewModels.Base;
 
 namespace Sapper.Models
 {
@@ -15,11 +7,11 @@ namespace Sapper.Models
     {
         public readonly sbyte[,] Field;
 
-        internal readonly Difficulty Difficulty;
+        public readonly Difficulty Difficulty;
 
         public int FontSize { get; private set; }
 
-        private Random rand = new Random();
+        private readonly Random rand = new();
 
         public SapperField(Difficulty difficulty)
         {
