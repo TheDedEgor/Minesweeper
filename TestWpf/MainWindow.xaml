@@ -7,35 +7,38 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="489" Width="559"
         x:Name="window">
-    <Grid x:Name="table">
+    <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="119*"/>
-            <RowDefinition Height="354*"/>
+            <RowDefinition Height="69*"/>
+            <RowDefinition Height="404*"/>
         </Grid.RowDefinitions>
-        <Button HorizontalAlignment="Left" Margin="40,0,0,0" VerticalAlignment="Center" Height="49" Width="55" Click="Button_Click" BorderThickness="4,4,4,4" Background="#FFC6C6C6">
-            <Button.BorderBrush>
-                <LinearGradientBrush EndPoint="0.9,1" StartPoint="0.12,0">
-                    <GradientStop Color="Gray" Offset="0.495"/>
-                    <GradientStop Color="#FFEAEAEA" Offset="0.492"/>
-                </LinearGradientBrush>
-            </Button.BorderBrush>
-        </Button>
-        <Button Content="Replay" HorizontalAlignment="Left" Margin="160,0,0,0" VerticalAlignment="Center" RenderTransformOrigin="0.505,0.503" Height="34" Width="95" Background="#FF5AAAB4" Click="Button_Click_1" FontSize="20" FontFamily="Book Antiqua">
-
-        </Button>
-        <Grid Margin="365,24,109,21">
-            <Border BorderThickness="10,0,0,0" BorderBrush="#FFEAEAEA"/>
-            <Border BorderThickness="0,10,0,0" BorderBrush="White"/>
-            <Border BorderThickness="0,0,10,0" BorderBrush="Gray"/>
-            <Border BorderThickness="0,0,0,10" BorderBrush="Gray"/>
-        </Grid>
-        <TabControl>
-            <TabItem Header="TabItem"/>
-            <TabItem Header="TabItem">
-                <Grid Background="#FFE5E5E5"/>
-            </TabItem>
-        </TabControl>
-        <Border x:Name="border"  BorderBrush="Black" BorderThickness="1" Grid.Row="1" Margin="87,25,119,74" Background="#FF9E4B4B"/>
-        <Button Content="Button" HorizontalAlignment="Left" Margin="208,53,0,0" VerticalAlignment="Top" Height="38" Width="116" Click="Button_Click_2"/>
+        <Button Grid.Row="0" Click="Button_Click" HorizontalAlignment="Center" VerticalAlignment="Center" Content="Click" Padding="3,3,3,3" FontSize="20"/>
+        <UniformGrid x:Name="grid" Grid.Row="1"  Rows="5" Columns="5">
+            <Border BorderThickness="3,3,3,3" BorderBrush="Black" />
+            <Border BorderThickness="3,3,3,3" BorderBrush="Black" />
+            <Border BorderThickness="3,3,3,3" BorderBrush="Black" />
+            <Border BorderThickness="3,3,3,3" BorderBrush="Black" />
+            <Border BorderThickness="3,3,3,3" BorderBrush="Black" />
+            <Border BorderThickness="3,3,3,3" BorderBrush="Black" />
+            <Border BorderThickness="3,3,3,3" BorderBrush="Black" />
+            <Border BorderThickness="3,3,3,3" BorderBrush="Black" />
+            <Border BorderThickness="3,3,3,3" BorderBrush="Black" />
+            <Border BorderThickness="3,3,3,3" BorderBrush="Black" />
+            <Border BorderThickness="3,3,3,3" BorderBrush="Black" />
+            <Border BorderThickness="3,3,3,3" BorderBrush="Black" />
+            <Border BorderThickness="3,3,3,3" BorderBrush="Black" />
+            <Border BorderThickness="3,3,3,3" BorderBrush="Black" />
+            <Border BorderThickness="3,3,3,3" BorderBrush="Black" />
+            <Border BorderThickness="3,3,3,3" BorderBrush="Black" />
+            <Border BorderThickness="3,3,3,3" BorderBrush="Black" />
+            <Border BorderThickness="3,3,3,3" BorderBrush="Black" />
+            <Border BorderThickness="3,3,3,3" BorderBrush="Black" />
+            <Border BorderThickness="3,3,3,3" BorderBrush="Black" />
+            <Border BorderThickness="3,3,3,3" BorderBrush="Black" />
+            <Border BorderThickness="3,3,3,3" BorderBrush="Black" />
+            <Border BorderThickness="3,3,3,3" BorderBrush="Black" />
+            <Border BorderThickness="3,3,3,3" BorderBrush="Black" />
+            <Border BorderThickness="3,3,3,3" BorderBrush="Black" />
+        </UniformGrid>
     </Grid>
 </Window>

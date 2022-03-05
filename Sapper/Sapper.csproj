@@ -8,13 +8,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Data\Images\dead.png" />
-    <None Remove="Data\Images\flag.png" />
-    <None Remove="Data\Images\mine.ico" />
-    <None Remove="Data\Images\numbers.bmp" />
-    <None Remove="Data\Images\sm.png" />
-    <None Remove="Data\Images\smile.jpg" />
-    <None Remove="Data\Images\smile.png" />
+    <None Remove="Images\dead.png" />
+    <None Remove="Images\flag.png" />
+    <None Remove="Images\mine.ico" />
+    <None Remove="Images\sm.png" />
+    <None Remove="Images\smile.jpg" />
+    <None Remove="Images\smile.png" />
     <None Remove="Data\mine.ico" />
     <None Remove="Data\mine.png" />
     <None Remove="Fonts\MK-90.ttf" />
@@ -29,12 +28,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Data\Images\dead.png" />
-    <Resource Include="Data\Images\flag.png" />
-    <Resource Include="Data\Images\mine.ico" />
-    <Resource Include="Data\Images\mine.png" />
-    <Resource Include="Data\Images\numbers.bmp" />
-    <Resource Include="Data\Images\sm.png" />
+    <Resource Include="Images\dead.png" />
+    <Resource Include="Images\flag.png" />
+    <Resource Include="Images\mine.ico" />
+    <Resource Include="Images\mine.png" />
+    <Resource Include="Images\sm.png" />
     <Resource Include="Fonts\MK-90.ttf" />
     <Resource Include="Fonts\RodchenkoBTT.ttf" />
   </ItemGroup>
