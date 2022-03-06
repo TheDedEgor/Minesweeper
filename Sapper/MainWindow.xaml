@@ -6,10 +6,11 @@
         xmlns:local="clr-namespace:Sapper"
         xmlns:vm="clr-namespace:Sapper.ViewModels"
         mc:Ignorable="d"
+        x:Name="Window"
         Title="Sapper" 
         Height="{Binding HeightWindow, Mode=TwoWay}"
         Width="{Binding WidthWindow, Mode=TwoWay}"
-        Icon="Images/mine.ico" FontWeight="Normal" HorizontalAlignment="Center" VerticalAlignment="Center" ResizeMode="CanMinimize">
+        Icon="Images/mine.ico" FontWeight="Normal" ResizeMode="CanMinimize" Left="100" Top="70">
     <Window.DataContext>
         <vm:MainWindowViewModel/>
     </Window.DataContext>
@@ -23,9 +24,9 @@
         </Grid.RowDefinitions>
         <Menu Grid.Row="0" FontSize="16">
             <MenuItem Header="Game">
-                <MenuItem Header="Beginner" Command="{Binding ChooseBeginnerCommand}"/>
-                <MenuItem Header="Intermediate" Command="{Binding ChooseIntermediateCommand}"/>
-                <MenuItem Header="Expert" Command="{Binding ChooseExpertCommand}"/>
+                <MenuItem Header="Beginner" Command="{Binding ChooseBeginnerCommand}" CommandParameter="{Binding ElementName=Window}"/>
+                <MenuItem Header="Intermediate" Command="{Binding ChooseIntermediateCommand}" CommandParameter="{Binding ElementName=Window}"/>
+                <MenuItem Header="Expert" Command="{Binding ChooseExpertCommand}" CommandParameter="{Binding ElementName=Window}"/>
             </MenuItem>
             <MenuItem Header="Statistics"/>
             <MenuItem Header="Exit" Command="{Binding CloseAppCommand}"/>
@@ -52,15 +53,15 @@
                                         </Grid.ColumnDefinitions>
                                         <Label Grid.Row="0" Grid.Column="0" Content="{Binding CounterMines}" FontSize="30" FontFamily="pack://application:,,,/Fonts/#MK-90" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#FF9D2F2F" BorderBrush="#FF704646" Background="#FF110F0F" Padding="9,5,7,5" VerticalContentAlignment="Center" BorderThickness="5,5,5,5" ClipToBounds="True" Margin="0,5,0,5" HorizontalContentAlignment="Center"/>
                                         <Label Grid.Row="0" Grid.Column="2" Content="{Binding Timer}" FontSize="30" FontFamily="pack://application:,,,/Fonts/#MK-90" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#FF9D2F2F" BorderBrush="#FF704646" Background="#FF110F0F" Padding="9,5,7,5" VerticalContentAlignment="Center" BorderThickness="5,5,5,5" ClipToBounds="True" Margin="0,5,0,5" HorizontalContentAlignment="Center"/>
-                                        <Border Grid.Row="0" Grid.Column="1" Background="#FFC6C6C6" HorizontalAlignment="Center" VerticalAlignment="Center" Width="60" Height="50" BorderThickness="4,4,4,4">
+                                        <Border x:Name="bord" Grid.Row="0" Grid.Column="1" Background="#FFC6C6C6" HorizontalAlignment="Center" VerticalAlignment="Center" Width="60" Height="50" BorderThickness="4,4,4,4">
                                             <Border.BorderBrush>
                                                 <LinearGradientBrush EndPoint="0.84,1" StartPoint="0.16,0">
-                                                    <GradientStop Color="White" Offset="0.5"/>
+                                                    <GradientStop x:Name="gradstop1" Color="White" Offset="0.5"/>
                                                     <GradientStop Color="Gray" Offset="0.5"/>
                                                 </LinearGradientBrush>
                                             </Border.BorderBrush>
                                             <Border.InputBindings>
-                                                <MouseBinding MouseAction="LeftClick" Command="{Binding PlayGameCommand}"/>
+                                                <MouseBinding MouseAction="LeftClick" Command="{Binding PlayGameCommand}" CommandParameter="{Binding ElementName=bord}"/>
                                             </Border.InputBindings>
                                             <Image Source="{Binding SourceImage}"/>
                                         </Border>

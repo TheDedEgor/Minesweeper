@@ -18,6 +18,14 @@ namespace Sapper.ViewModels
 {
     internal class MainWindowViewModel : ViewModel
     {
+        #region Static fields
+
+        static double screenHeight = SystemParameters.FullPrimaryScreenHeight;
+
+        static double screenWidth = SystemParameters.FullPrimaryScreenWidth;
+
+        #endregion
+
         #region Fields
 
         private SapperField Sapper = new(Difficulty.Beginner);
@@ -163,6 +171,12 @@ namespace Sapper.ViewModels
             CountClosedCells = 71;
             HeightWindow = 600;
             WidthWindow = 600;
+            var window = (Window)p;
+            if(window != null)
+            {
+                window.Top = (screenHeight - window.Height) / 2 + 40;
+                window.Left = (screenWidth - window.Width) / 2;
+            }
             GenerateCells();
             SourceImage = SharedUtils.SmileImage;
         }
@@ -192,6 +206,12 @@ namespace Sapper.ViewModels
             CountClosedCells = 216;
             HeightWindow = 750;
             WidthWindow = 750;
+            var window = (Window)p;
+            if(window != null)
+            {
+                window.Top = (screenHeight - window.Height) / 2 + 40;
+                window.Left = (screenWidth - window.Width) / 2;
+            }
             GenerateCells();
             SourceImage = SharedUtils.SmileImage;
         }
@@ -220,7 +240,13 @@ namespace Sapper.ViewModels
             CounterMines = "099";
             CountClosedCells = 381;
             HeightWindow = 750;
-            WidthWindow = 1300;
+            WidthWindow = 1350;
+            var window = (Window)p;
+            if(window != null)
+            {
+                window.Top = (screenHeight - window.Height) / 2 + 40;
+                window.Left = (screenWidth - window.Width) / 2;
+            }
             GenerateCells();
             SourceImage = SharedUtils.SmileImage;
         }
@@ -235,6 +261,33 @@ namespace Sapper.ViewModels
 
         private void OnPlayGameCommandExecuted(object p)
         {
+            #region Animation
+
+            //var border = (Border)p;
+            //ThicknessAnimation borderAnimation = new();
+            //borderAnimation.From = border.BorderThickness;
+            //borderAnimation.To = new Thickness(6, 6, 3, 3);
+            //borderAnimation.Duration = TimeSpan.FromSeconds(0.5);
+            ////borderAnimation.SpeedRatio = 1.7;
+            //borderAnimation.FillBehavior = FillBehavior.Stop;
+
+            //ColorAnimation colorAnimation = new();
+            //colorAnimation.From = Color.FromArgb(255, 128, 128, 128); 
+            //colorAnimation.To = Color.FromArgb(255, 255, 255, 255);
+            //colorAnimation.Duration = TimeSpan.FromSeconds(1);
+            //colorAnimation.FillBehavior = FillBehavior.Stop;
+            ////colorAnimation.SpeedRatio = 5;
+            //Storyboard.SetTargetName(colorAnimation, "gradstop1");
+            //Storyboard.SetTargetProperty(colorAnimation, new PropertyPath(GradientStop.ColorProperty));
+            //Storyboard.SetTargetProperty(borderAnimation, new PropertyPath(Border.BorderThicknessProperty));
+
+            //Storyboard storyboard = new();
+            //storyboard.Children.Add(colorAnimation);
+            //storyboard.Children.Add(borderAnimation);
+            //storyboard.Begin(border);
+
+            #endregion
+
             if (Sapper.Difficulty == Difficulty.Beginner)
                 OnChooseBeginnerCommandExecuted();
             else if (Sapper.Difficulty == Difficulty.Intermediate)
