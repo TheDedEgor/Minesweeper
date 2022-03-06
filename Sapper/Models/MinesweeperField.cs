@@ -3,7 +3,7 @@ using Sapper.Data;
 
 namespace Sapper.Models
 {
-    internal class SapperField
+    internal class MinesweeperField
     {
         public readonly sbyte[,] Field;
 
@@ -13,7 +13,7 @@ namespace Sapper.Models
 
         private readonly Random rand = new();
 
-        public SapperField(Difficulty difficulty)
+        public MinesweeperField(Difficulty difficulty)
         {
             Difficulty = difficulty;
             if (difficulty == Difficulty.Beginner)

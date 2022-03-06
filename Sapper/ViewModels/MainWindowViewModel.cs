@@ -13,6 +13,8 @@ using Sapper.Data;
 using System.Linq;
 using System.Collections.ObjectModel;
 using System.Windows.Threading;
+using System.IO;
+using System.Xml.Serialization;
 
 namespace Sapper.ViewModels
 {
@@ -24,11 +26,13 @@ namespace Sapper.ViewModels
 
         static double screenWidth = SystemParameters.FullPrimaryScreenWidth;
 
+        static MinesweeperStatistics minesweeperStatistics;
+
         #endregion
 
         #region Fields
 
-        private SapperField Sapper = new(Difficulty.Beginner);
+        private MinesweeperField Sapper = new(Difficulty.Beginner);
 
         private bool GameIsOver = false;
 
@@ -147,6 +151,15 @@ namespace Sapper.ViewModels
         #endregion
 
         #region Commands
+
+        public ICommand ShowStatisticsCommand { get; }
+
+        private bool CanShowStatisticsCommandExecute(object p) => true;
+
+        private void OnShowStatisticsCommandExecuted(object p)
+        {
+
+        }
 
         #region ChooseBeginnerCommand
 
@@ -353,18 +366,20 @@ namespace Sapper.ViewModels
                                     GameTimer.Stop();
                                     SourceImage = SharedUtils.DeadSmileImage;
                                     GameIsOver = true;
+                                    minesweeperStatistics.TotalCountGames++;
+                                    minesweeperStatistics.LostGames++;
+                                    SerializeStatistics();
                                 }
-                                else if (Sapper.Field[i, j] == 0)
+                                else if (Sapper.Field[i, j] == 0 && _cells[i, j].Visibility == Visibility.Visible)
                                 {
                                     _cells[i, j].Visibility = Visibility.Collapsed;
                                     CountClosedCells--;
                                     OpeningCellsRecursion(i, j);
                                 }
-                                else
+                                else if (_cells[i, j].Visibility == Visibility.Visible)
                                 {
-                                    _cells[i, j].Visibility = Visibility.Collapsed;
                                     CountClosedCells--;
-                                    continue;
+                                    _cells[i, j].Visibility = Visibility.Collapsed;
                                 }
                             }
                         }
@@ -373,7 +388,23 @@ namespace Sapper.ViewModels
                 }
             }
             if(CountClosedCells == 0)
+            {
+                GameIsOver = true;
                 GameTimer.Stop();
+                minesweeperStatistics.TotalCountGames++;
+                minesweeperStatistics.WinsGames++;
+                if(Sapper.Difficulty == Difficulty.Beginner)
+                    minesweeperStatistics.BeginnerWinsGames++;
+                else if(Sapper.Difficulty == Difficulty.Intermediate)
+                    minesweeperStatistics.IntermediateWinsGames++;
+                else
+                    minesweeperStatistics.ExpertWinsGames++;
+                if (minesweeperStatistics.BestTime != 0 && Time < minesweeperStatistics.BestTime)
+                    minesweeperStatistics.BestTime = Time;
+                else
+                    minesweeperStatistics.BestTime = Time;
+                SerializeStatistics();
+            }
         }
 
         #endregion
@@ -436,13 +467,32 @@ namespace Sapper.ViewModels
                     GameTimer.Stop();
                     SourceImage = SharedUtils.DeadSmileImage;
                     GameIsOver = true;
+                    minesweeperStatistics.LostGames++;
+                    minesweeperStatistics.TotalCountGames++;
+                    SerializeStatistics();
                 }
                 else if (Sapper.Field[idx, jdx] == 0)
                 {
                     OpeningCellsRecursion(idx, jdx);
                 }
                 if (CountClosedCells == 0)
+                {
+                    GameIsOver = true;
                     GameTimer.Stop();
+                    minesweeperStatistics.TotalCountGames++;
+                    minesweeperStatistics.WinsGames++;
+                    if (Sapper.Difficulty == Difficulty.Beginner)
+                        minesweeperStatistics.BeginnerWinsGames++;
+                    else if (Sapper.Difficulty == Difficulty.Intermediate)
+                        minesweeperStatistics.IntermediateWinsGames++;
+                    else
+                        minesweeperStatistics.ExpertWinsGames++;
+                    if (minesweeperStatistics.BestTime != 0 && Time < minesweeperStatistics.BestTime)
+                        minesweeperStatistics.BestTime = Time;
+                    else
+                        minesweeperStatistics.BestTime = Time;
+                    SerializeStatistics();
+                }
             }
         }
 
@@ -574,6 +624,21 @@ namespace Sapper.ViewModels
             }
         }
 
+        private void SerializeStatistics()
+        {
+            XmlSerializer xmlSerializer = new XmlSerializer(typeof(MinesweeperStatistics));
+            using (var stream = new FileStream("statistics.xml", FileMode.Open))
+            {
+                xmlSerializer.Serialize(stream, minesweeperStatistics);
+            }
+        }
+
+        private void DeleteStatistics()
+        {
+            minesweeperStatistics = new();
+            SerializeStatistics();
+        }
+
         #endregion
 
         public MainWindowViewModel()
@@ -589,6 +654,12 @@ namespace Sapper.ViewModels
             ChooseExpertCommand = new LambdaCommand(OnChooseExpertCommandExecuted, CanChooseExpertCommandExecute);
 
             #endregion
+
+            XmlSerializer xmlSerializer = new XmlSerializer(typeof(MinesweeperStatistics));
+            using(var stream = new FileStream("statistics.xml", FileMode.Open))
+            {
+                minesweeperStatistics = (MinesweeperStatistics)xmlSerializer.Deserialize(stream);
+            }
         }
     }
 }

@@ -7,7 +7,7 @@
         xmlns:vm="clr-namespace:Sapper.ViewModels"
         mc:Ignorable="d"
         x:Name="Window"
-        Title="Sapper" 
+        Title="Minesweeper"
         Height="{Binding HeightWindow, Mode=TwoWay}"
         Width="{Binding WidthWindow, Mode=TwoWay}"
         Icon="Images/mine.ico" FontWeight="Normal" ResizeMode="CanMinimize" Left="100" Top="70">
@@ -28,7 +28,10 @@
                 <MenuItem Header="Intermediate" Command="{Binding ChooseIntermediateCommand}" CommandParameter="{Binding ElementName=Window}"/>
                 <MenuItem Header="Expert" Command="{Binding ChooseExpertCommand}" CommandParameter="{Binding ElementName=Window}"/>
             </MenuItem>
-            <MenuItem Header="Statistics"/>
+            <MenuItem Header="Statistics">
+                <MenuItem Header="Show"/>
+                <MenuItem Header="Delete"/>
+            </MenuItem>
             <MenuItem Header="Exit" Command="{Binding CloseAppCommand}"/>
         </Menu>
         <Border Grid.Row="1" BorderThickness="0,0,5,5" BorderBrush="Gray">
