@@ -8,21 +8,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="flag.png" />
-    <None Remove="mine.jpg" />
-    <None Remove="mine.png" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Reference Include="Sapper">
       <HintPath>..\Sapper\bin\Debug\net6.0-windows\Sapper.dll</HintPath>
     </Reference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Resource Include="flag.png" />
-    <Resource Include="mine.jpg" />
-    <Resource Include="mine.png" />
   </ItemGroup>
 
 </Project>

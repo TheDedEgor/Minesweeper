@@ -1,22 +1,22 @@
 ﻿using System;
 using System.Windows;
-using Sapper.ViewModels.Base;
 using System.Windows.Input;
-using Sapper.Infrastructure.Commands;
+using Minesweeper.Infrastructure.Commands;
 using System.Windows.Controls;
 using System.Windows.Media;
-using Sapper.Models;
 using System.Windows.Media.Imaging;
-using Sapper.Infrastructure.Extensions;
-using Sapper.Common;
-using Sapper.Data;
 using System.Linq;
 using System.Collections.ObjectModel;
 using System.Windows.Threading;
 using System.IO;
 using System.Xml.Serialization;
+using Minesweeper.Views.Windows;
+using Minesweeper.Models;
+using Minesweeper.ViewModels.Base;
+using Minesweeper.Common;
+using Minesweeper.Data;
 
-namespace Sapper.ViewModels
+namespace Minesweeper.ViewModels
 {
     internal class MainWindowViewModel : ViewModel
     {
@@ -26,7 +26,7 @@ namespace Sapper.ViewModels
 
         static double screenWidth = SystemParameters.FullPrimaryScreenWidth;
 
-        static MinesweeperStatistics minesweeperStatistics;
+        static public MinesweeperStatistics minesweeperStatistics;
 
         #endregion
 
@@ -88,11 +88,11 @@ namespace Sapper.ViewModels
 
         #region AllCells
 
-        private CellVM[,] _cells;
+        private CellViewModel[,] _cells;
 
-        private ObservableCollection<CellVM> _allCells;
+        private ObservableCollection<CellViewModel> _allCells;
 
-        public ObservableCollection<CellVM> AllCells
+        public ObservableCollection<CellViewModel> AllCells
         {
             get => _allCells;
             set => Set(ref _allCells, value);
@@ -152,14 +152,20 @@ namespace Sapper.ViewModels
 
         #region Commands
 
+        #region ShowStatisticsCommand
+
         public ICommand ShowStatisticsCommand { get; }
 
         private bool CanShowStatisticsCommandExecute(object p) => true;
 
         private void OnShowStatisticsCommandExecuted(object p)
         {
-
+            StatisticsWindow statisticsWindow = new();
+            statisticsWindow.Owner = Application.Current.MainWindow;
+            statisticsWindow.ShowDialog();
         }
+
+        #endregion
 
         #region ChooseBeginnerCommand
 
@@ -185,7 +191,7 @@ namespace Sapper.ViewModels
             HeightWindow = 600;
             WidthWindow = 600;
             var window = (Window)p;
-            if(window != null)
+            if (window != null)
             {
                 window.Top = (screenHeight - window.Height) / 2 + 40;
                 window.Left = (screenWidth - window.Width) / 2;
@@ -220,7 +226,7 @@ namespace Sapper.ViewModels
             HeightWindow = 750;
             WidthWindow = 750;
             var window = (Window)p;
-            if(window != null)
+            if (window != null)
             {
                 window.Top = (screenHeight - window.Height) / 2 + 40;
                 window.Left = (screenWidth - window.Width) / 2;
@@ -255,7 +261,7 @@ namespace Sapper.ViewModels
             HeightWindow = 750;
             WidthWindow = 1350;
             var window = (Window)p;
-            if(window != null)
+            if (window != null)
             {
                 window.Top = (screenHeight - window.Height) / 2 + 40;
                 window.Left = (screenWidth - window.Width) / 2;
@@ -285,7 +291,7 @@ namespace Sapper.ViewModels
             //borderAnimation.FillBehavior = FillBehavior.Stop;
 
             //ColorAnimation colorAnimation = new();
-            //colorAnimation.From = Color.FromArgb(255, 128, 128, 128); 
+            //colorAnimation.From = Color.FromArgb(255, 128, 128, 128);
             //colorAnimation.To = Color.FromArgb(255, 255, 255, 255);
             //colorAnimation.Duration = TimeSpan.FromSeconds(1);
             //colorAnimation.FillBehavior = FillBehavior.Stop;
@@ -340,7 +346,7 @@ namespace Sapper.ViewModels
                 {
                     try
                     {
-                        if (_cells[i,j].IsFlag)
+                        if (_cells[i, j].IsFlag)
                             count++;
                     }
                     catch { }
@@ -387,15 +393,15 @@ namespace Sapper.ViewModels
                     }
                 }
             }
-            if(CountClosedCells == 0)
+            if (CountClosedCells == 0)
             {
                 GameIsOver = true;
                 GameTimer.Stop();
                 minesweeperStatistics.TotalCountGames++;
                 minesweeperStatistics.WinsGames++;
-                if(Sapper.Difficulty == Difficulty.Beginner)
+                if (Sapper.Difficulty == Difficulty.Beginner)
                     minesweeperStatistics.BeginnerWinsGames++;
-                else if(Sapper.Difficulty == Difficulty.Intermediate)
+                else if (Sapper.Difficulty == Difficulty.Intermediate)
                     minesweeperStatistics.IntermediateWinsGames++;
                 else
                     minesweeperStatistics.ExpertWinsGames++;
@@ -424,7 +430,7 @@ namespace Sapper.ViewModels
             var cords = border.Uid.Split('-');
             int idx = int.Parse(cords[0]);
             int jdx = int.Parse(cords[1]);
-            if (!_cells[idx,jdx].IsFlag)
+            if (!_cells[idx, jdx].IsFlag)
             {
                 Image flagImage = new Image() { Source = SharedUtils.FlagImage };
                 border.Child = flagImage;
@@ -447,7 +453,7 @@ namespace Sapper.ViewModels
 
         private void OnClickBorderCommandExecuted(object p)
         {
-            if(!GameTimerStarted)
+            if (!GameTimerStarted)
             {
                 GameTimer.Start();
                 GameTimerStarted = true;
@@ -527,13 +533,13 @@ namespace Sapper.ViewModels
             GameTimer.Tick += new EventHandler(TimerTick);
             int n = Sapper.Field.GetLength(0);
             int m = Sapper.Field.GetLength(1);
-            var cells = new CellVM[n, m];
+            var cells = new CellViewModel[n, m];
             var image = SharedUtils.MineImage;
             for (int i = 0; i < n; i++)
             {
                 for (int j = 0; j < m; j++)
                 {
-                    cells[i, j] = new CellVM(Sapper.FontSize, Sapper.Field[i, j], Visibility.Visible, $"{i}-{j}", null, new SolidColorBrush(Color.FromArgb(255, 198, 198, 198)), OnSetFlagCommandExecuted, CanSetFlagCommandExecute, OnClickBorderCommandExecuted, CanClickBorderCommandExecute, OnClickLabelCommandExecuted, CanClickLabelCommandExecute);
+                    cells[i, j] = new CellViewModel(Sapper.FontSize, Sapper.Field[i, j], Visibility.Visible, $"{i}-{j}", null, new SolidColorBrush(Color.FromArgb(255, 198, 198, 198)), OnSetFlagCommandExecuted, CanSetFlagCommandExecute, OnClickBorderCommandExecuted, CanClickBorderCommandExecute, OnClickLabelCommandExecuted, CanClickLabelCommandExecute);
                     if (Sapper.Field[i, j] == -1)
                     {
                         Image img = new() { Source = image };
@@ -564,14 +570,22 @@ namespace Sapper.ViewModels
                     {
                         cells[i, j].Foreground = new SolidColorBrush(Color.FromArgb(255, 138, 12, 12));
                     }
-                    else
+                    else if (Sapper.Field[i, j] == 6)
                     {
                         cells[i, j].Foreground = new SolidColorBrush(Color.FromArgb(255, 250, 10, 10));
                     }
+                    else if (Sapper.Field[i, j] == 7)
+                    {
+                        cells[i, j].Foreground = new SolidColorBrush(Color.FromArgb(255, 28, 207, 214));
+                    }
+                    else
+                    {
+                        cells[i, j].Foreground = new SolidColorBrush(Color.FromArgb(255, 133, 14, 155));
+                    }
                 }
             }
-            this._cells = cells;
-            AllCells = _cells.Cast<CellVM>().ToObservable();
+            _cells = cells;
+            AllCells = _cells.Cast<CellViewModel>().ToObservable();
         }
 
         private void OpeningCellsRecursion(int idx, int jdx)
@@ -626,17 +640,11 @@ namespace Sapper.ViewModels
 
         private void SerializeStatistics()
         {
-            XmlSerializer xmlSerializer = new XmlSerializer(typeof(MinesweeperStatistics));
-            using (var stream = new FileStream("statistics.xml", FileMode.Open))
+            XmlSerializer xmlSerializer = new(typeof(MinesweeperStatistics));
+            using (var stream = new StreamWriter("statistics.xml"))
             {
                 xmlSerializer.Serialize(stream, minesweeperStatistics);
             }
-        }
-
-        private void DeleteStatistics()
-        {
-            minesweeperStatistics = new();
-            SerializeStatistics();
         }
 
         #endregion
@@ -652,11 +660,12 @@ namespace Sapper.ViewModels
             ChooseBeginnerCommand = new LambdaCommand(OnChooseBeginnerCommandExecuted, CanChooseBeginnerCommandExecute);
             ChooseIntermediateCommand = new LambdaCommand(OnChooseIntermediateCommandExecuted, CanChooseIntermediateCommandExecute);
             ChooseExpertCommand = new LambdaCommand(OnChooseExpertCommandExecuted, CanChooseExpertCommandExecute);
+            ShowStatisticsCommand = new LambdaCommand(OnShowStatisticsCommandExecuted, CanShowStatisticsCommandExecute);
 
             #endregion
 
-            XmlSerializer xmlSerializer = new XmlSerializer(typeof(MinesweeperStatistics));
-            using(var stream = new FileStream("statistics.xml", FileMode.Open))
+            XmlSerializer xmlSerializer = new(typeof(MinesweeperStatistics));
+            using (var stream = new FileStream("statistics.xml", FileMode.Open))
             {
                 minesweeperStatistics = (MinesweeperStatistics)xmlSerializer.Deserialize(stream);
             }

@@ -1,4 +1,4 @@
-﻿namespace Sapper.Data
+﻿namespace Minesweeper.Data
 {
     public enum Difficulty : byte
     {

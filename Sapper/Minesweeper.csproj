@@ -8,31 +8,38 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Fonts\11179.ttf" />
+    <None Remove="Fonts\FontCounterAndTimer.ttf" />
+    <None Remove="Fonts\FontMenu.ttf" />
+    <None Remove="Fonts\FontNumbersField.ttf" />
+    <None Remove="Fonts\FontTextStatistics.ttf" />
+    <None Remove="Fonts\FontTitleStatistics.otf" />
     <None Remove="Images\dead.png" />
     <None Remove="Images\flag.png" />
     <None Remove="Images\mine.ico" />
+    <None Remove="Images\questionMark.ico" />
     <None Remove="Images\sm.png" />
     <None Remove="Images\smile.jpg" />
     <None Remove="Images\smile.png" />
     <None Remove="Data\mine.ico" />
     <None Remove="Data\mine.png" />
-    <None Remove="Fonts\MK-90.ttf" />
     <None Remove="Fonts\Numbers.ttf" />
-    <None Remove="Fonts\RodchenkoBTT.ttf" />
+    <None Remove="Images\stats.ico" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Views\Windows\" />
-  </ItemGroup>
-
-  <ItemGroup>
+    <Resource Include="Fonts\FontTextStatistics.ttf" />
+    <Resource Include="Fonts\FontMenu.ttf" />
+    <Resource Include="Fonts\FontTitleStatistics.otf" />
     <Resource Include="Images\dead.png" />
     <Resource Include="Images\flag.png" />
     <Resource Include="Images\mine.ico" />
     <Resource Include="Images\mine.png" />
+    <Resource Include="Fonts\FontCounterAndTimer.ttf" />
+    <Resource Include="Fonts\FontNumbersField.ttf" />
+    <Resource Include="Images\questionMark.ico" />
     <Resource Include="Images\sm.png" />
-    <Resource Include="Fonts\MK-90.ttf" />
-    <Resource Include="Fonts\RodchenkoBTT.ttf" />
+    <Resource Include="Images\stats.ico" />
   </ItemGroup>
 
 </Project>

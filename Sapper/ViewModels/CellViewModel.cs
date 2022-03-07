@@ -1,13 +1,13 @@
-﻿using Sapper.Infrastructure.Commands;
-using Sapper.ViewModels.Base;
+﻿using Minesweeper.ViewModels.Base;
+using Minesweeper.Infrastructure.Commands;
 using System;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 
-namespace Sapper.ViewModels
+namespace Minesweeper.ViewModels
 {
-    internal class CellVM : ViewModel
+    internal class CellViewModel : ViewModel
     {
         #region Fields
 
@@ -91,18 +91,18 @@ namespace Sapper.ViewModels
 
         #endregion
 
-        public CellVM(int fontSize, object Value, Visibility Visibility, string Uid, Brush Foreground, Brush Background, Action<object> onSetFlag, Func<object, bool> canSetFlag, Action<object> onClickBorder, Func<object, bool> canClickBorder, Action<object> onClickLabel, Func<object, bool> canClickLabel)
+        public CellViewModel(int fontSize, object Value, Visibility Visibility, string Uid, Brush Foreground, Brush Background, Action<object> onSetFlag, Func<object, bool> canSetFlag, Action<object> onClickBorder, Func<object, bool> canClickBorder, Action<object> onClickLabel, Func<object, bool> canClickLabel)
         {
             this.Value = Value;
             this.Visibility = Visibility;
             this.Uid = Uid;
             this.Foreground = Foreground;
             this.Background = Background;
-            this.SetFlagCommand = new LambdaCommand(onSetFlag, canSetFlag);
-            this.ClickBorderCommand = new LambdaCommand(onClickBorder, canClickBorder);
-            this.ClickLabelCommand = new LambdaCommand(onClickLabel, canClickLabel);
-            this.IsFlag = false;
-            this.FontSize = fontSize;
+            SetFlagCommand = new LambdaCommand(onSetFlag, canSetFlag);
+            ClickBorderCommand = new LambdaCommand(onClickBorder, canClickBorder);
+            ClickLabelCommand = new LambdaCommand(onClickLabel, canClickLabel);
+            IsFlag = false;
+            FontSize = fontSize;
         }
     }
 }

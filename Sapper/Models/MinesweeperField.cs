@@ -1,7 +1,7 @@
 ﻿using System;
-using Sapper.Data;
+using Minesweeper.Data;
 
-namespace Sapper.Models
+namespace Minesweeper.Models
 {
     internal class MinesweeperField
     {
@@ -36,7 +36,7 @@ namespace Sapper.Models
             int jmax = Field.GetLength(1);
             while (i < (int)difficulty)
             {
-                if(SetMine(imax,jmax))
+                if (SetMine(imax, jmax))
                     i++;
             }
         }
@@ -45,7 +45,7 @@ namespace Sapper.Models
         {
             int idx = rand.Next(0, imax);
             int jdx = rand.Next(0, jmax);
-            if (Field[idx, jdx] != -1) 
+            if (Field[idx, jdx] != -1)
             {
                 Field[idx, jdx] = -1;
                 for (int i = idx - 1; i < idx + 2; i++)

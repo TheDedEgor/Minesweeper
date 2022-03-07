@@ -1,0 +1,62 @@
+﻿<Window x:Class="Minesweeper.Views.Windows.StatisticsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="clr-namespace:Minesweeper.ViewModels"
+        mc:Ignorable="d"
+        x:Name="StatWindow"
+        Title="Statistics" Height="365" Width="535"
+        Icon="pack://application:,,,/Images/stats.ico" ResizeMode="CanMinimize">
+    <Window.DataContext>
+        <vm:StatisticsViewModel/>
+    </Window.DataContext>
+    <Window.Resources>
+        <Style x:Key="MyStyleStatisticsTextBlock" TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="pack://application:,,,/Fonts/#Little Trouble Girl BV"/>
+            <Setter Property="FontSize" Value="22"/>
+            <Setter Property="Margin" Value="20,0,0,5"/>
+            <Setter Property="Height" Value="27"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="FontWeight" Value="Bold"/>
+                    <Setter Property="FontSize" Value="24"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="MyButtonStyle" TargetType="Button">
+            <Setter Property="FontFamily" Value="pack://application:,,,/Fonts/#Little Trouble Girl BV"/>
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Height" Value="35"/>
+            <Setter Property="Width" Value="70"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect/>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Background" Value="#FFC28B8B"/>
+            <Setter Property="BorderThickness" Value="2"/>
+            <Setter Property="BorderBrush" Value="#FF203D58"/>
+        </Style>
+    </Window.Resources>
+    <StackPanel>
+        <TextBlock Text="Game statistics" FontFamily="pack://application:,,,/Fonts/#Bad Signal" FontSize="36" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,10,0,0"/>
+        <TextBlock Style="{StaticResource MyStyleStatisticsTextBlock}" Text="{Binding TotalGames}"/>
+        <TextBlock Style="{StaticResource MyStyleStatisticsTextBlock}" Text="{Binding WinsGames}"/>
+        <TextBlock Style="{StaticResource MyStyleStatisticsTextBlock}" Text="{Binding LostGames}"/>
+        <TextBlock Style="{StaticResource MyStyleStatisticsTextBlock}" Text="{Binding BeginnerWinsGames}"/>
+        <TextBlock Style="{StaticResource MyStyleStatisticsTextBlock}" Text="{Binding IntermediateWinsGames}"/>
+        <TextBlock Style="{StaticResource MyStyleStatisticsTextBlock}" Text="{Binding ExpertWinsGames}"/>
+        <TextBlock Style="{StaticResource MyStyleStatisticsTextBlock}" Text="{Binding BestTime}"/>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Button Style="{StaticResource MyButtonStyle}" Command="{Binding OKClickButtonCommand}" CommandParameter="{Binding ElementName=StatWindow}" Grid.Row="0" Grid.Column="0" Content="OK" HorizontalAlignment="Right" Margin="0,5,10,0"/>
+            <Button Style="{StaticResource MyButtonStyle}" Command="{Binding DeleteClickButtonCommand}" CommandParameter="{Binding ElementName=StatWindow}" Grid.Row="0" Grid.Column="1" Content="DELETE" HorizontalAlignment="Left" Margin="10,5,0,0"/>
+        </Grid>
+    </StackPanel>
+</Window>

@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Windows.Input;
 
-namespace Sapper.Infrastructure.Commands.Base
+namespace Minesweeper.Infrastructure.Commands.Base
 {
     internal abstract class Command : ICommand
     {
         public event EventHandler? CanExecuteChanged
         {
-            add => CommandManager.RequerySuggested += value; 
+            add => CommandManager.RequerySuggested += value;
             remove => CommandManager.RequerySuggested -= value;
         }
 

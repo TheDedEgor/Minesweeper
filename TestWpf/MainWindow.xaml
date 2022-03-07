@@ -12,7 +12,7 @@
             <RowDefinition Height="69*"/>
             <RowDefinition Height="404*"/>
         </Grid.RowDefinitions>
-        <Button Grid.Row="0" Click="Button_Click" HorizontalAlignment="Center" VerticalAlignment="Center" Content="Click" Padding="3,3,3,3" FontSize="20"/>
+        <Button Grid.Row="0" Click="Button_Click" HorizontalAlignment="Center" VerticalAlignment="Center" Content="Click" Padding="3,3,3,3" FontSize="20" Background="#FF850E9B"/>
         <UniformGrid x:Name="grid" Grid.Row="1"  Rows="5" Columns="5">
             <Border BorderThickness="3,3,3,3" BorderBrush="Black" />
             <Border BorderThickness="3,3,3,3" BorderBrush="Black" />

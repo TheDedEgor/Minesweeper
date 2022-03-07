@@ -2,7 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Linq;
 
-namespace Sapper.Infrastructure.Extensions
+namespace Minesweeper.Common
 {
     internal static class MyExtensions
     {

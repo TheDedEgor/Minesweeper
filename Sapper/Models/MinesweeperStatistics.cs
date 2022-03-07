@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Sapper.Models
+namespace Minesweeper.Models
 {
     public class MinesweeperStatistics
     {
@@ -12,8 +12,8 @@ namespace Sapper.Models
         public int WinsGames { get; set; }
         public int LostGames { get; set; }
         public int BeginnerWinsGames { get; set; }
-        public int IntermediateWinsGames { get; set; } 
+        public int IntermediateWinsGames { get; set; }
         public int ExpertWinsGames { get; set; }
-        public int BestTime { get; set; } 
+        public int BestTime { get; set; }
     }
 }
