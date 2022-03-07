@@ -665,10 +665,27 @@ namespace Minesweeper.ViewModels
             #endregion
 
             XmlSerializer xmlSerializer = new(typeof(MinesweeperStatistics));
-            using (var stream = new FileStream("statistics.xml", FileMode.Open))
+            var path = Path.Combine(Directory.GetCurrentDirectory(), "statistics.xml");
+            if(File.Exists(path))
             {
-                minesweeperStatistics = (MinesweeperStatistics)xmlSerializer.Deserialize(stream);
+                using (var stream = new FileStream("statistics.xml", FileMode.Open))
+                {
+                    minesweeperStatistics = (MinesweeperStatistics)xmlSerializer.Deserialize(stream);
+                }
             }
+            else
+            {
+                minesweeperStatistics = new();
+                using (var stream = new StreamWriter("statistics.xml"))
+                {
+                    xmlSerializer.Serialize(stream, minesweeperStatistics);
+                }
+                using (var stream = new FileStream("statistics.xml", FileMode.Open))
+                {
+                    minesweeperStatistics = (MinesweeperStatistics)xmlSerializer.Deserialize(stream);
+                }
+            }
+            
         }
     }
 }
