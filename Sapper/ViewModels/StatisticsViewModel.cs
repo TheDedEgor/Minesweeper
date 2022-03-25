@@ -52,11 +52,25 @@ namespace Minesweeper.ViewModels
             get => _expertWinsGames;
         }
 
-        private string _bestTime = $"The best time among all games in seconds - {MainWindowViewModel.minesweeperStatistics.BestTime}";
+        private string _bestTimeBeginner = $"The best time in \"Beginner\" mode in seconds - {MainWindowViewModel.minesweeperStatistics.BestTimeBeginner}";
 
-        public string BestTime
+        public string BestTimeBeginner
         {
-            get => _bestTime;
+            get => _bestTimeBeginner;
+        }
+
+        private string _bestTimeIntermediate = $"The best time in \"Intermediate\" mode in seconds - {MainWindowViewModel.minesweeperStatistics.BestTimeIntermediate}";
+
+        public string BestTimeIntermediate
+        {
+            get => _bestTimeIntermediate;
+        }
+
+        private string _bestTimeExpert = $"The best time in \"Expert\" mode in seconds - {MainWindowViewModel.minesweeperStatistics.BestTimeExpert}";
+
+        public string BestTimeExpert
+        {
+            get => _bestTimeExpert;
         }
 
         #endregion

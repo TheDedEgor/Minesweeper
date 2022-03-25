@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Minesweeper.Models
+﻿namespace Minesweeper.Models
 {
     public class MinesweeperStatistics
     {
@@ -14,6 +8,8 @@ namespace Minesweeper.Models
         public int BeginnerWinsGames { get; set; }
         public int IntermediateWinsGames { get; set; }
         public int ExpertWinsGames { get; set; }
-        public int BestTime { get; set; }
+        public int BestTimeBeginner { get; set; }
+        public int BestTimeIntermediate { get; set; }
+        public int BestTimeExpert { get; set; }
     }
 }

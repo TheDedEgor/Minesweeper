@@ -6,7 +6,7 @@
         xmlns:vm="clr-namespace:Minesweeper.ViewModels"
         mc:Ignorable="d"
         x:Name="StatWindow"
-        Title="Statistics" Height="365" Width="535"
+        Title="Statistics" Height="435" Width="535"
         Icon="pack://application:,,,/Images/stats.ico" ResizeMode="CanMinimize">
     <Window.DataContext>
         <vm:StatisticsViewModel/>
@@ -49,7 +49,9 @@
         <TextBlock Style="{StaticResource MyStyleStatisticsTextBlock}" Text="{Binding BeginnerWinsGames}"/>
         <TextBlock Style="{StaticResource MyStyleStatisticsTextBlock}" Text="{Binding IntermediateWinsGames}"/>
         <TextBlock Style="{StaticResource MyStyleStatisticsTextBlock}" Text="{Binding ExpertWinsGames}"/>
-        <TextBlock Style="{StaticResource MyStyleStatisticsTextBlock}" Text="{Binding BestTime}"/>
+        <TextBlock Style="{StaticResource MyStyleStatisticsTextBlock}" Text="{Binding BestTimeBeginner}"/>
+        <TextBlock Style="{StaticResource MyStyleStatisticsTextBlock}" Text="{Binding BestTimeIntermediate}"/>
+        <TextBlock Style="{StaticResource MyStyleStatisticsTextBlock}" Text="{Binding BestTimeExpert}"/>
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>

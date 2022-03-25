@@ -15,6 +15,7 @@ using Minesweeper.Models;
 using Minesweeper.ViewModels.Base;
 using Minesweeper.Common;
 using Minesweeper.Data;
+using System.Windows.Media.Animation;
 
 namespace Minesweeper.ViewModels
 {
@@ -102,7 +103,7 @@ namespace Minesweeper.ViewModels
 
         #region HeightWindow
 
-        private double _heightWindow = 600;
+        private double _heightWindow = 620;
 
         public double HeightWindow
         {
@@ -114,7 +115,7 @@ namespace Minesweeper.ViewModels
 
         #region WidthWindow
 
-        private double _widthWindow = 600;
+        private double _widthWindow = 605;
 
         public double WidthWindow
         {
@@ -188,8 +189,8 @@ namespace Minesweeper.ViewModels
             Timer = "000";
             CounterMines = "010";
             CountClosedCells = 71;
-            HeightWindow = 600;
-            WidthWindow = 600;
+            HeightWindow = 620;
+            WidthWindow = 605;
             var window = (Window)p;
             if (window != null)
             {
@@ -372,8 +373,7 @@ namespace Minesweeper.ViewModels
                                     GameTimer.Stop();
                                     SourceImage = SharedUtils.DeadSmileImage;
                                     GameIsOver = true;
-                                    minesweeperStatistics.TotalCountGames++;
-                                    minesweeperStatistics.LostGames++;
+                                    ChangingLoseStats();
                                     SerializeStatistics();
                                 }
                                 else if (Sapper.Field[i, j] == 0 && _cells[i, j].Visibility == Visibility.Visible)
@@ -397,18 +397,7 @@ namespace Minesweeper.ViewModels
             {
                 GameIsOver = true;
                 GameTimer.Stop();
-                minesweeperStatistics.TotalCountGames++;
-                minesweeperStatistics.WinsGames++;
-                if (Sapper.Difficulty == Difficulty.Beginner)
-                    minesweeperStatistics.BeginnerWinsGames++;
-                else if (Sapper.Difficulty == Difficulty.Intermediate)
-                    minesweeperStatistics.IntermediateWinsGames++;
-                else
-                    minesweeperStatistics.ExpertWinsGames++;
-                if (minesweeperStatistics.BestTime != 0 && Time < minesweeperStatistics.BestTime)
-                    minesweeperStatistics.BestTime = Time;
-                else
-                    minesweeperStatistics.BestTime = Time;
+                ChangingWinStats();
                 SerializeStatistics();
             }
         }
@@ -473,8 +462,7 @@ namespace Minesweeper.ViewModels
                     GameTimer.Stop();
                     SourceImage = SharedUtils.DeadSmileImage;
                     GameIsOver = true;
-                    minesweeperStatistics.LostGames++;
-                    minesweeperStatistics.TotalCountGames++;
+                    ChangingLoseStats();
                     SerializeStatistics();
                 }
                 else if (Sapper.Field[idx, jdx] == 0)
@@ -485,18 +473,7 @@ namespace Minesweeper.ViewModels
                 {
                     GameIsOver = true;
                     GameTimer.Stop();
-                    minesweeperStatistics.TotalCountGames++;
-                    minesweeperStatistics.WinsGames++;
-                    if (Sapper.Difficulty == Difficulty.Beginner)
-                        minesweeperStatistics.BeginnerWinsGames++;
-                    else if (Sapper.Difficulty == Difficulty.Intermediate)
-                        minesweeperStatistics.IntermediateWinsGames++;
-                    else
-                        minesweeperStatistics.ExpertWinsGames++;
-                    if (minesweeperStatistics.BestTime == 0)
-                        minesweeperStatistics.BestTime = Time;
-                    else if (Time < minesweeperStatistics.BestTime)
-                        minesweeperStatistics.BestTime = Time;
+                    ChangingWinStats();
                     SerializeStatistics();
                 }
             }
@@ -646,6 +623,42 @@ namespace Minesweeper.ViewModels
             {
                 xmlSerializer.Serialize(stream, minesweeperStatistics);
             }
+        }
+
+        private void ChangingWinStats()
+        {
+            minesweeperStatistics.TotalCountGames++;
+            minesweeperStatistics.WinsGames++;
+            if (Sapper.Difficulty == Difficulty.Beginner)
+            {
+                minesweeperStatistics.BeginnerWinsGames++;
+                if (minesweeperStatistics.BestTimeBeginner == 0)
+                    minesweeperStatistics.BestTimeBeginner = Time;
+                else if (Time < minesweeperStatistics.BestTimeBeginner)
+                    minesweeperStatistics.BestTimeBeginner = Time;
+            }
+            else if (Sapper.Difficulty == Difficulty.Intermediate)
+            {
+                minesweeperStatistics.IntermediateWinsGames++;
+                if (minesweeperStatistics.BestTimeIntermediate == 0)
+                    minesweeperStatistics.BestTimeIntermediate = Time;
+                else if (Time < minesweeperStatistics.BestTimeIntermediate)
+                    minesweeperStatistics.BestTimeIntermediate = Time;
+            }
+            else
+            {
+                minesweeperStatistics.ExpertWinsGames++;
+                if (minesweeperStatistics.BestTimeExpert == 0)
+                    minesweeperStatistics.BestTimeExpert = Time;
+                else if (Time < minesweeperStatistics.BestTimeExpert)
+                    minesweeperStatistics.BestTimeExpert = Time;
+            }
+        }
+
+        private void ChangingLoseStats()
+        {
+            minesweeperStatistics.TotalCountGames++;
+            minesweeperStatistics.LostGames++;
         }
 
         #endregion
