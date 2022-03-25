@@ -493,9 +493,9 @@ namespace Minesweeper.ViewModels
                         minesweeperStatistics.IntermediateWinsGames++;
                     else
                         minesweeperStatistics.ExpertWinsGames++;
-                    if (minesweeperStatistics.BestTime != 0 && Time < minesweeperStatistics.BestTime)
+                    if (minesweeperStatistics.BestTime == 0)
                         minesweeperStatistics.BestTime = Time;
-                    else
+                    else if (Time < minesweeperStatistics.BestTime)
                         minesweeperStatistics.BestTime = Time;
                     SerializeStatistics();
                 }
@@ -511,7 +511,8 @@ namespace Minesweeper.ViewModels
         private void TimerTick(object sender, EventArgs e)
         {
             Time++;
-            Timer = Time.ToString("000");
+            if (Time < 1000)
+                Timer = Time.ToString("000");
         }
 
         private void ShowAllMines()
@@ -685,7 +686,6 @@ namespace Minesweeper.ViewModels
                     minesweeperStatistics = (MinesweeperStatistics)xmlSerializer.Deserialize(stream);
                 }
             }
-            
         }
     }
 }
